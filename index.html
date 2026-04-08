@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="assets/icon.png" type="image/png">
+  <title>MOʟTEN — Creative Portfolio</title>
+	
+
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Space starfield canvas -->
+<canvas id="spaceCanvas"></canvas>
+
+<!-- Shooting star -->
+<div class="shooting-star" id="shootingStar"></div>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ── NAVBAR ── -->
+<nav class="molten-nav">
+  <a href="https://www.youtube.com/@molten_fx" target="_blank" class="nav-logo">MOʟTEN<span>.</span></a>
+  <ul class="nav-links-center">
+    <li><a href="#showreel">Showreel</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#contact" class="nav-cta"><span>Hire Me</span></a>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="#showreel" onclick="toggleMenu()">Showreel</a>
+  <a href="#services" onclick="toggleMenu()">Services</a>
+  <a href="#work" onclick="toggleMenu()">Work</a>
+  <a href="#about" onclick="toggleMenu()">About</a>
+  <a href="#contact" class="mobile-cta" onclick="toggleMenu()">Hire Me</a>
+</div>
+
+<!-- ── HERO ── -->
+<section class="hero-section" id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <!-- Space decorations -->
+  <div class="space-planet space-planet-1"></div>
+  <div class="space-planet space-planet-2"></div>
+  <div class="space-orbit space-orbit-1"></div>
+  <div class="space-orbit space-orbit-2"></div>
+
+  <!-- Floating Cards -->
+  <div class="float-cards" id="floatCards"></div>
+
+  <div class="hero-content text-center">
+    <p class="hero-eyebrow">Creative Editorr &amp; Motion Designer</p>
+    <h1 class="hero-title">I Create<br>Visual <em>Stories</em><br>That Hit Different</h1>
+    <p class="hero-sub">
+      <span>Video Editing</span> &nbsp;•&nbsp;
+      <span>VFX</span> &nbsp;•&nbsp;
+      <span>Motion Graphics</span> &nbsp;•&nbsp;
+      <span>Graphic Design</span>
+    </p>
+    <div class="hero-btns">
+      <a href="#work" class="btn-primary-molten">View Work</a>
+      <a href="#contact" class="btn-secondary-molten">Contact Me</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ── MARQUEE ── -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-inner" id="marqueeInner">
+    <span class="marquee-item">Video Editing</span><span class="marquee-sep"><span class="marquee-dot"></span></span>
+    <span class="marquee-item">Motion Graphics</span><span class="marquee-sep"><span class="marquee-dot"></span></span>
+    <span class="marquee-item">Visual Effects</span><span class="marquee-sep"><span class="marquee-dot"></span></span>
+    <span class="marquee-item">Color Grading</span><span class="marquee-sep"><span class="marquee-dot"></span></span>
+    <span class="marquee-item">Graphic Design</span><span class="marquee-sep"><span class="marquee-dot"></span></span>
+    <span class="marquee-item">Brand Identity</span><span class="marquee-sep"><span class="marquee-dot"></span></span>
+    <span class="marquee-item">3D Animation</span><span class="marquee-sep"><span class="marquee-dot"></span></span>
+    <span class="marquee-item">Compositing</span><span class="marquee-sep"><span class="marquee-dot"></span></span>
+  </div>
+</div>
+
+<!-- ── SHOWREEL ── -->
+<section class="showreel-section text-center" id="showreel">
+  <div class="reveal">
+    <span class="section-tag sa sa-up sa-d1">001 — Featured</span>
+    <h2 class="section-title sa sa-up sa-d2">MY SHOWREEL</h2>
+    <p class="section-sub sa sa-up sa-d3">A quick glimpse into my creative universe</p>
+  </div>
+  <div class="video-wrapper reveal sa sa-pop sa-d4">
+    <div id="videoOverlay" style="position:absolute;inset:0;z-index:2;cursor:pointer;background:linear-gradient(135deg,#07091A,#0D1130,#060812);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s ease;">
+      <img src="https://img.youtube.com/vi/GkpAtKpp-YI/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/GkpAtKpp-YI/hqdefault.jpg'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45;" alt="Showreel">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(5,7,13,.85) 0%,rgba(5,7,13,.3) 60%,rgba(5,7,13,.5) 100%);"></div>
+      <div id="playBtn" style="position:relative;z-index:3;width:88px;height:88px;border:1px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .3s ease;box-shadow:0 0 40px rgba(10,26,255,.5),0 0 80px rgba(10,26,255,.2);">
+        <div style="position:absolute;inset:-10px;border:1px solid rgba(10,26,255,.35);border-radius:50%;animation:pulsering 2s ease-in-out infinite;"></div>
+        <svg viewBox="0 0 24 24" style="width:26px;fill:white;margin-left:5px;"><polygon points="5,3 19,12 5,21"/></svg>
+      </div>
+      <span style="position:relative;z-index:3;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.25em;color:rgba(240,242,255,.7);text-transform:uppercase;">Play Showreel</span>
+      <span style="position:absolute;bottom:20px;right:24px;z-index:3;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;color:rgba(107,113,148,.7);">SHOWREEL 2026</span>
+    </div>
+    <iframe id="showreelFrame" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;opacity:0;transition:opacity .5s ease;" src="" data-src="https://www.youtube-nocookie.com/embed/GkpAtKpp-YI?autoplay=1&rel=0&modestbranding=1&color=white" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+  </div>
+</section>
+
+<!-- ── SERVICES ── -->
+<section class="services-section" id="services">
+  <div class="text-center reveal">
+    <span class="section-tag sa sa-up sa-d1">002 — What I Do</span>
+    <h2 class="section-title sa sa-up sa-d2">SERVICES</h2>
+    <p class="section-sub sa sa-up sa-d3">Crafted with precision, delivered with impact</p>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card sa sa-pop sa-d1">
+      <span class="service-num">1.</span>
+      <div class="service-icon"><svg viewBox="0 0 44 44"><rect x="4" y="8" width="36" height="28" rx="2"/><polygon points="17,16 31,22 17,28" style="fill:rgba(10,26,255,.3);stroke:rgba(10,26,255,.8);stroke-width:1"/><line x1="4" y1="36" x2="40" y2="36"/></svg></div>
+      <h3 class="service-title">Video Editing</h3>
+      <p class="service-desc">Precision cuts, seamless transitions, narrative-driven edits that keep audiences locked in from first frame to last.</p>
+    </div>
+    <div class="service-card sa sa-pop sa-d2">
+      <span class="service-num">2.</span>
+      <div class="service-icon"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="14"/><path d="M22 8 L26 16 L22 14 L18 16 Z"/><path d="M36 22 L28 18 L30 22 L28 26 Z"/><path d="M22 36 L18 28 L22 30 L26 28 Z"/><path d="M8 22 L16 26 L14 22 L16 18 Z"/></svg></div>
+      <h3 class="service-title">VFX</h3>
+      <p class="service-desc">Visual effects that defy reality. Compositing, CGI integration, and seamless digital artistry that elevates any production.</p>
+    </div>
+    <div class="service-card sa sa-pop sa-d3">
+      <span class="service-num">3.</span>
+      <div class="service-icon"><svg viewBox="0 0 44 44"><rect x="6" y="6" width="32" height="32" rx="1"/><line x1="6" y1="16" x2="38" y2="16"/><line x1="16" y1="16" x2="16" y2="38"/><rect x="20" y="21" width="12" height="8" rx="1" style="fill:rgba(10,26,255,.2)"/></svg></div>
+      <h3 class="service-title">Graphic Design</h3>
+      <p class="service-desc">Bold visuals, meticulous layouts, and brand identities that communicate who you are before you say a word.</p>
+    </div>
+    <div class="service-card sa sa-pop sa-d4">
+      <span class="service-num">4.</span>
+      <div class="service-icon"><svg viewBox="0 0 44 44"><path d="M8 34 Q12 20 22 18 Q32 16 36 10"/><circle cx="22" cy="18" r="3" style="fill:rgba(10,26,255,.3);stroke:rgba(10,26,255,.8)"/><path d="M14 36 Q18 28 22 26 Q26 24 30 18"/><circle cx="30" cy="18" r="2" style="fill:rgba(10,26,255,.2);stroke:rgba(10,26,255,.6)"/></svg></div>
+      <h3 class="service-title">Motion Graphics</h3>
+      <p class="service-desc">Animated graphics with soul — kinetic typography, dynamic transitions, and motion systems that bring ideas to life.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── PORTFOLIO ── -->
+<section class="portfolio-section" id="work">
+  <div class="text-center reveal">
+    <span class="section-tag sa sa-up sa-d1">003 — Selected Work</span>
+    <h2 class="section-title sa sa-up sa-d2">PROJECTS</h2>
+    <p class="section-sub sa sa-up sa-d3">Hand-picked work that defines the craft</p>
+  </div>
+  <div class="portfolio-filter reveal sa sa-up sa-d4">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Film</button>
+    <button class="filter-btn">Motion</button>
+    <button class="filter-btn">Design</button>
+    <button class="filter-btn">VFX</button>
+  </div>
+  <div class="portfolio-grid reveal">
+    <div class="project-card sa sa-up sa-d1" data-num="01">
+      <div class="project-thumb" style="position:absolute;inset:0; background-image:url();background-size:cover;background-position:center top;"><img src="assets/S-2 TB.png" class="img-fluid" alt=""/></div>
+      <div class="project-visual"><svg viewBox="0 0 100 60"><rect x="10" y="10" width="80" height="40" rx="1" style="stroke:rgba(10,26,255,.8);stroke-width:.5"/><polygon points="40,20 60,30 40,40" style="fill:rgba(10,26,255,.4);stroke:none"/></svg></div>
+      <div class="project-overlay"><span class="project-tag">Film · VFX</span><h3 class="project-name">She Never Left The Classroom - Short Film</h3><a href="https://youtu.be/pOgp91AZtjQ" target="_blank" class="project-link">View Project <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg></a></div>
+    </div>
+    <div class="project-card sa sa-left sa-d2" data-num="02">
+      <div class="project-thumb" style="position:absolute;inset:0; background-image:url();background-size:cover;background-position:center top;">
+      <img src="assets/P-COVER.png" class="img-fluid" alt=""/></div>
+      <div class="project-visual"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="20" style="stroke:rgba(10,26,255,.6)"/><circle cx="30" cy="30" r="10" style="stroke:rgba(31,59,255,.4)"/></svg></div>
+      <div class="project-overlay"><span class="project-tag">Motion Graphics</span><h3 class="project-name">PORTFOLIO - Graphic Design</h3><a href="https://www.behance.net/gallery/241021765/PORTFOLIO-2025-GRAPHIC-DESIGN" target="_blank" class="project-link">View Project <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg></a></div>
+    </div>
+    <div class="project-card sa sa-right sa-d2" data-num="03">
+    <div class="project-thumb" style="position:absolute;inset:0; background-image:url();background-size:cover;background-position:center;">  
+      <img src="assets/TB-1.png" class="img-fluid" alt=""/> </div>
+      <div class="project-visual"><svg viewBox="0 0 60 60"><rect x="10" y="10" width="40" height="40"/><line x1="10" y1="30" x2="50" y2="30" style="stroke:rgba(10,26,255,.8)"/><line x1="30" y1="10" x2="30" y2="50" style="stroke:rgba(10,26,255,.5)"/></svg></div>
+      <div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">Story Based Edit</h3><a href="https://youtu.be/HTkUfd1SYxc" target="_blank" class="project-link">View Project <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg></a></div>
+    </div>
+    <div class="project-card sa sa-up sa-d3" data-num="04">
+      <div class="project-thumb" style="position:absolute;inset:0; background-image:url();background-size:cover;background-position:center;"><img src="assets/TB-2.png" class="img-fluid" alt=""/></div>
+      <div class="project-visual"><svg viewBox="0 0 60 60"><path d="M10 50 Q20 10 30 30 Q40 50 50 10" style="stroke:rgba(10,26,255,.8);fill:none"/></svg></div>
+      <div class="project-overlay"><span class="project-tag">Motion Graphics</span><h3 class="project-name">2D +3D Typography</h3><a href="https://youtu.be/ZoRKntjSG9A" target="_blank" class="project-link">View Project <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg></a></div>
+    </div>
+    <div class="project-card sa sa-left sa-d4" data-num="05">
+      <div class="project-thumb" style="position:absolute;inset:0; background-image:url();background-size:cover;background-position:center;"><img src="assets/TB-3.png" class="img-fluid" alt=""/></div>
+      <div class="project-visual"><svg viewBox="0 0 60 60"><polygon points="30,5 55,50 5,50" style="stroke:rgba(10,26,255,.6);fill:rgba(10,26,255,.05)"/></svg></div>
+      <div class="project-overlay"><span class="project-tag">VFX · Compositing</span><h3 class="project-name">The Best Edit</h3><a href="https://youtu.be/E50aulDcBo4" target="_blank" class="project-link">View Project <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section class="about-section" id="about">
+  <div class="about-inner">
+ 
+
+      <div class="about-img-wrap reveal sa sa-right">
+        <div class="about-img">
+          <img src="assets/Magazine Cover.png" width="3508" height="4961" alt=""/>
+        </div>
+        <div class="about-img-label">
+          <small>Based in</small>
+          <span>India, New Delhi</span>
+        </div>
+      </div>
+
+      <div class="reveal" style="transition-delay:.2s">
+        <span class="section-tag sa sa-left sa-d1">004 — About Me</span>
+        <h2 class="section-title sa sa-left sa-d2">BEHIND<br>THE FRAME</h2>
+        <p class="about-text sa sa-left sa-d3">Hii, I'm Khushank G. (aka MOʟTEN) a creative professional with an obsession for visual storytelling. Every project I touch is an opportunity to push the boundaries of what's possible — from cinematic edits to immersive motion experiences.</p>
+        <p class="about-text sa sa-left sa-d4">With 3+ years learning experience, I've learned a crazy amount of things to build visuals that don't just look good — they feel different.</p>
+        <p class="about-text sa sa-left sa-d5">My toolkit spans Adobe Creative Suite, After Effects, Audition, Photoshop, Premier Pro and beyond. But tools are just the start — the real work happens in the conceptual space.</p>
+        <div class="about-stats">
+          <div class="stat-item sa sa-pop sa-d3"><span class="stat-num">3+</span><span class="stat-label">Years Learning Exp.</span></div>
+          <div class="stat-item sa sa-pop sa-d4"><span class="stat-num">100+</span><span class="stat-label">Projects</span></div>
+          <div class="stat-item sa sa-pop sa-d5"><span class="stat-num">5+</span><span class="stat-label">Clients</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section class="contact-section" id="contact">
+  <div class="contact-bg"></div>
+  <div class="contact-inner">
+    <div class="reveal">
+      <span class="section-tag sa sa-up sa-d1">005 — Let's Talk</span>
+      <h2 class="contact-headline sa sa-up sa-d2">LET'S CREATE<br>SOMETHING <em>INSANE</em><br>TOGETHER</h2>
+      <p class="contact-sub sa sa-up sa-d3">Available for freelance, collaborations &amp; part-time roles</p>
+    </div>
+    <div class="contact-form reveal" style="transition-delay:.2s">
+      <div class="row g-3 mb-0">
+        <div class="col-md-6">
+          <div class="form-group sa sa-left sa-d2">
+            <label>Your Name</label>
+            <input type="text" placeholder="Alex Monroe" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group sa sa-right sa-d2">
+            <label>Email Address</label>
+            <input type="email" placeholder="alexstudio@gmail.com" required>
+          </div>
+        </div>
+      </div>
+      <div class="form-group sa sa-up sa-d3 mt-3">
+        <label>Project Type</label>
+        <input type="text" placeholder="Short Film / Brand Campaign / Music Video..." required>
+      </div>
+      <div class="form-group sa sa-up sa-d4 mt-3">
+        <label>Your Message</label>
+        <textarea placeholder="Tell me about your project, timeline, and vision..."></textarea>
+      </div>
+      <button class="form-submit sa sa-pop sa-d5 mt-3"><span>Send It →</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="molten-footer">
+  <a href="https://www.youtube.com/@molten_fx" target="_blank" class="footer-logo">MOʟTEN<span>.</span></a>
+  <div class="footer-copy">© 2026 — MOʟTEN. All rights reserved.</div>
+  <div class="footer-social">
+    <a href="https://www.youtube.com/@molten_fx" target="_blank">YouTube</a>
+    <a href="https://www.instagram.com/molten_fx/" target="_blank">Instagram</a>
+    <a href="https://www.behance.net/Khushank-Gautam" target="_blank">Behance</a>
+    <a href="https://www.linkedin.com/in/khushank-gautam/" target="_blank">LinkedIn</a>
+    <a href="https://payhip.com/moltenfx" target="_blank">Payhip</a>
+    <a href="https://discordapp.com/users/1242061395521175622" target="_blank">Discord</a>
+  </div>
+</footer>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Custom JS -->
+<script src="js/main.js"></script>
+
+</body>
+</html>
