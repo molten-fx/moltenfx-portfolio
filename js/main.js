@@ -33,41 +33,69 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
   };
 
-  /* ── CUSTOM CURSOR ── */
-  (function () {
-    const cursor = document.getElementById('cursor');
-    const ring = document.getElementById('cursorRing');
-    if (!cursor || !ring) return;
-    let mx = 0, my = 0, rx = 0, ry = 0;
+ // Cursor — dot snaps, filled square lags + rotates
+const dot    = document.getElementById('cursor-dot');
+const square = document.getElementById('cursor-square');
 
-    document.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      cursor.style.left = (mx - 5) + 'px';
-      cursor.style.top  = (my - 5) + 'px';
-    });
+let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+let sqX = mouseX, sqY = mouseY;
+let angle = 0, speed = 0;
+let lastX = mouseX, lastY = mouseY;
 
-    function animateRing() {
-      rx += (mx - rx) * 0.12;
-      ry += (my - ry) * 0.12;
-      ring.style.left = (rx - 18) + 'px';
-      ring.style.top  = (ry - 18) + 'px';
-      requestAnimationFrame(animateRing);
-    }
-    animateRing();
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  if (dot) {
+    dot.style.left = mouseX + 'px';
+    dot.style.top  = mouseY + 'px';
+  }
+  const dx = mouseX - lastX;
+  const dy = mouseY - lastY;
+  speed = Math.sqrt(dx * dx + dy * dy);
+  lastX = mouseX;
+  lastY = mouseY;
+});
 
-    document.querySelectorAll('a, button, .project-card, .service-card').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.style.transform = 'scale(2)';
-        ring.style.transform = 'scale(1.5)';
-        ring.style.borderColor = 'rgba(10,26,255,0.8)';
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor.style.transform = 'scale(1)';
-        ring.style.transform = 'scale(1)';
-        ring.style.borderColor = 'rgba(10,26,255,0.5)';
-      });
-    });
-  })();
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+(function animateSquare() {
+  sqX = lerp(sqX, mouseX, 0.055);
+  sqY = lerp(sqY, mouseY, 0.055);
+  angle += speed * 0.5;
+  speed *= 0.92;
+  if (square) {
+    square.style.left = sqX + 'px';
+    square.style.top  = sqY + 'px';
+    square.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+  }
+  requestAnimationFrame(animateSquare);
+})();
+
+document.querySelectorAll('a, button, .project-card, .service-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    if (!square) return;
+    square.style.width  = '28px';
+    square.style.height = '28px';
+    square.style.background = 'rgba(10,26,255,0.9)';
+    square.style.boxShadow = '0 0 20px rgba(10,26,255,0.9), 0 0 40px rgba(10,26,255,0.4)';
+  });
+  el.addEventListener('mouseleave', () => {
+    if (!square) return;
+    square.style.width  = '18px';
+    square.style.height = '18px';
+    square.style.background = 'rgba(10,26,255,0.75)';
+    square.style.boxShadow = '0 0 10px rgba(10,26,255,0.6), 0 0 24px rgba(10,26,255,0.2)';
+  });
+});
+
+document.addEventListener('mouseleave', () => {
+  if (dot)    dot.style.opacity    = '0';
+  if (square) square.style.opacity = '0';
+});
+document.addEventListener('mouseenter', () => {
+  if (dot)    dot.style.opacity    = '1';
+  if (square) square.style.opacity = '1';
+});
 
   /* ── SMOOTH NAV LINKS ── */
   document.querySelectorAll('a[href^="#"]').forEach(a => {

@@ -31,27 +31,33 @@ body   {
   cursor: none;
 }
 
-/* ── CUSTOM CURSOR ── */
+/* CUSTOM CURSOR — always visible on desktop */
 @media (min-width: 769px) {
   body { cursor: none !important; }
-  .cursor, .cursor-ring { display: block !important; }
+  #cursor-dot, #cursor-square { display: block !important; }
 }
-.cursor {
-  width: 10px; height: 10px;
-  background: var(--accent);
+#cursor-dot {
+  width: 6px; height: 6px;
+  background: #fff;
   border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none; z-index: 9999;
-  transition: transform 0.1s ease;
-  mix-blend-mode: screen;
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  will-change: transform;
 }
-.cursor-ring {
-  width: 36px; height: 36px;
-  border: 1px solid rgba(10,26,255,0.5);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none; z-index: 9998;
-  transition: all 0.18s ease;
+#cursor-square {
+  width: 18px; height: 18px;
+  background: rgba(10, 26, 255, 0.75);
+  border: 1px solid rgba(80, 130, 255, 0.9);
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 0 10px rgba(10,26,255,0.6), 0 0 24px rgba(10,26,255,0.2);
+  transform: translate(-50%, -50%) rotate(0deg);
+  will-change: transform;
 }
 
 /* ── SPACE CANVAS ── */
@@ -523,7 +529,7 @@ nav { position: fixed !important; z-index: 100 !important; }
 }
 @media (max-width: 768px) {
   body { cursor: auto; }
-  .cursor, .cursor-ring { display: none; }
+  #cursor-dot, #cursor-square { display: none; }
   .molten-nav { padding: 12px 24px; grid-template-columns: 1fr auto; }
   .nav-links-center, .nav-cta { display: none; }
   .nav-hamburger { display: flex; }
