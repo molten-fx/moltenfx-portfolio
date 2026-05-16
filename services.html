@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="assets/icon.png" type="image/png">
+  <title>MOʟTEN — Services</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Space starfield canvas -->
+<canvas id="spaceCanvas"></canvas>
+<div class="shooting-star" id="shootingStar"></div>
+<div id="cursor-dot"></div>
+<div id="cursor-square"></div>
+
+<!-- NAVBAR -->
+<nav class="molten-nav">
+  <a href="index.html" class="nav-logo">MOʟTEN<span>.</span></a>
+  <ul class="nav-links-center">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html" class="nav-active">Services</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="contact.html" class="nav-cta"><span>Hire Me</span></a>
+    <button class="nav-hamburger" id="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="index.html" onclick="toggleMenu()">Home</a>
+  <a href="services.html" class="nav-active" onclick="toggleMenu()">Services</a>
+  <a href="projects.html" onclick="toggleMenu()">Projects</a>
+  <a href="about.html" onclick="toggleMenu()">About</a>
+  <a href="contact.html" onclick="toggleMenu()">Contact</a>
+  <a href="contact.html" class="mobile-cta" onclick="toggleMenu()">Hire Me</a>
+</div>
+<section class="page-hero-section">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="space-planet space-planet-1"></div>
+  <div class="space-planet space-planet-2"></div>
+  <div class="space-orbit space-orbit-1"></div>
+  <div class="space-orbit space-orbit-2"></div>
+  <div class="page-hero-content text-center">
+    <span class="section-tag sa sa-up sa-d1">002 — What I Do</span>
+    <h1 class="page-hero-title sa sa-up sa-d2">MY<br><em>SERVICES</em></h1>
+    <p class="page-hero-sub sa sa-up sa-d3">Crafted with precision, delivered with impact</p>
+  </div>
+</section>
+
+<section class="services-section" id="services" style="padding-top:80px;">
+  <div class="text-center reveal" style="margin-bottom:64px;">
+    <span class="section-tag sa sa-up sa-d1">Core Offerings</span>
+    <h2 class="section-title sa sa-up sa-d2">WHAT I BRING</h2>
+    <p class="section-sub sa sa-up sa-d3">Every service designed to elevate your vision</p>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card sa sa-pop sa-d1">
+      <span class="service-num">1.</span>
+      <div class="service-icon"><svg viewBox="0 0 44 44"><rect x="4" y="8" width="36" height="28" rx="2"/><polygon points="17,16 31,22 17,28" style="fill:rgba(10,26,255,.3);stroke:rgba(10,26,255,.8);stroke-width:1"/><line x1="4" y1="36" x2="40" y2="36"/></svg></div>
+      <h3 class="service-title">Video Editing</h3>
+      <p class="service-desc">Precision cuts, seamless transitions, narrative-driven edits that keep audiences locked in from first frame to last.</p>
+    </div>
+    <div class="service-card sa sa-pop sa-d2">
+      <span class="service-num">2.</span>
+      <div class="service-icon"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="14"/><path d="M22 8 L26 16 L22 14 L18 16 Z"/><path d="M36 22 L28 18 L30 22 L28 26 Z"/><path d="M22 36 L18 28 L22 30 L26 28 Z"/><path d="M8 22 L16 26 L14 22 L16 18 Z"/></svg></div>
+      <h3 class="service-title">VFX</h3>
+      <p class="service-desc">Visual effects that defy reality. Compositing, CGI integration, and seamless digital artistry that elevates any production.</p>
+    </div>
+    <div class="service-card sa sa-pop sa-d3">
+      <span class="service-num">3.</span>
+      <div class="service-icon"><svg viewBox="0 0 44 44"><rect x="6" y="6" width="32" height="32" rx="1"/><line x1="6" y1="16" x2="38" y2="16"/><line x1="16" y1="16" x2="16" y2="38"/><rect x="20" y="21" width="12" height="8" rx="1" style="fill:rgba(10,26,255,.2)"/></svg></div>
+      <h3 class="service-title">Graphic Design</h3>
+      <p class="service-desc">Bold visuals, meticulous layouts, and brand identities that communicate who you are before you say a word.</p>
+    </div>
+    <div class="service-card sa sa-pop sa-d4">
+      <span class="service-num">4.</span>
+      <div class="service-icon"><svg viewBox="0 0 44 44"><path d="M8 34 Q12 20 22 18 Q32 16 36 10"/><circle cx="22" cy="18" r="3" style="fill:rgba(10,26,255,.3);stroke:rgba(10,26,255,.8)"/><path d="M14 36 Q18 28 22 26 Q26 24 30 18"/><circle cx="30" cy="18" r="2" style="fill:rgba(10,26,255,.2);stroke:rgba(10,26,255,.6)"/></svg></div>
+      <h3 class="service-title">Motion Graphics</h3>
+      <p class="service-desc">Animated graphics with soul — kinetic typography, dynamic transitions, and motion systems that bring ideas to life.</p>
+    </div>
+  </div>
+</section>
+
+<section class="services-process-section">
+  <div class="services-process-inner">
+    <div class="text-center reveal" style="margin-bottom:64px;">
+      <span class="section-tag sa sa-up sa-d1">How It Works</span>
+      <h2 class="section-title sa sa-up sa-d2">THE PROCESS</h2>
+      <p class="section-sub sa sa-up sa-d3">From concept to final delivery</p>
+    </div>
+    <div class="process-steps reveal">
+      <div class="process-step sa sa-up sa-d1">
+        <span class="process-num">01</span>
+        <h3 class="process-title">Brief &amp; Vision</h3>
+        <p class="process-desc">We talk through your goals, references, timeline, and budget. I make sure I understand the vision before a single frame is touched.</p>
+      </div>
+      <div class="process-connector sa sa-up sa-d2"></div>
+      <div class="process-step sa sa-up sa-d2">
+        <span class="process-num">02</span>
+        <h3 class="process-title">Concept &amp; Draft</h3>
+        <p class="process-desc">First cut or mockup delivered for feedback. We align on direction, pacing, and style before going deep into production.</p>
+      </div>
+      <div class="process-connector sa sa-up sa-d3"></div>
+      <div class="process-step sa sa-up sa-d3">
+        <span class="process-num">03</span>
+        <h3 class="process-title">Production</h3>
+        <p class="process-desc">Full execution — editing, effects, sound design, colour grade. Iterative rounds of feedback keep everything on track.</p>
+      </div>
+      <div class="process-connector sa sa-up sa-d4"></div>
+      <div class="process-step sa sa-up sa-d4">
+        <span class="process-num">04</span>
+        <h3 class="process-title">Delivery</h3>
+        <p class="process-desc">Final export in your required format, resolution, and platform spec. Clean handoff with all source files if needed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services-cta-section">
+  <div class="services-cta-inner reveal">
+    <span class="section-tag sa sa-up sa-d1">Ready?</span>
+    <h2 class="section-title sa sa-up sa-d2">LET'S BUILD<br>SOMETHING <em>GREAT</em></h2>
+    <p class="section-sub sa sa-up sa-d3">Get in touch and let's make it happen</p>
+    <a href="contact.html" class="btn-primary-molten sa sa-pop sa-d4">Start a Project</a>
+  </div>
+</section>
+<footer class="molten-footer">
+  <a href="index.html" class="footer-logo">MOʟTEN<span>.</span></a>
+  <div class="footer-copy">© 2026 — MOʟTEN. All rights reserved.</div>
+  <div class="footer-social">
+    <a href="https://www.youtube.com/@molten_fx" target="_blank" rel="noopener noreferrer">YouTube</a>
+    <a href="https://www.instagram.com/molten_fx/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    <a href="https://www.behance.net/Khushank-Gautam" target="_blank" rel="noopener noreferrer">Behance</a>
+    <a href="https://www.linkedin.com/in/khushank-gautam/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    <a href="https://payhip.com/moltenfx" target="_blank" rel="noopener noreferrer">Payhip</a>
+    <a href="https://discordapp.com/users/1242061395521175622" target="_blank" rel="noopener noreferrer">Discord</a>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

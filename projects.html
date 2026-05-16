@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="assets/icon.png" type="image/png">
+  <title>MOʟTEN — Projects</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Space starfield canvas -->
+<canvas id="spaceCanvas"></canvas>
+<div class="shooting-star" id="shootingStar"></div>
+<div id="cursor-dot"></div>
+<div id="cursor-square"></div>
+
+<!-- NAVBAR -->
+<nav class="molten-nav">
+  <a href="index.html" class="nav-logo">MOʟTEN<span>.</span></a>
+  <ul class="nav-links-center">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="projects.html" class="nav-active">Projects</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="contact.html" class="nav-cta"><span>Hire Me</span></a>
+    <button class="nav-hamburger" id="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="index.html" onclick="toggleMenu()">Home</a>
+  <a href="services.html" onclick="toggleMenu()">Services</a>
+  <a href="projects.html" class="nav-active" onclick="toggleMenu()">Projects</a>
+  <a href="about.html" onclick="toggleMenu()">About</a>
+  <a href="contact.html" onclick="toggleMenu()">Contact</a>
+  <a href="contact.html" class="mobile-cta" onclick="toggleMenu()">Hire Me</a>
+</div>
+<section class="page-hero-section">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="space-planet space-planet-1"></div>
+  <div class="space-planet space-planet-2"></div>
+  <div class="space-orbit space-orbit-1"></div>
+  <div class="space-orbit space-orbit-2"></div>
+  <div class="page-hero-content text-center">
+    <span class="section-tag sa sa-up sa-d1">003 — Selected Work</span>
+    <h1 class="page-hero-title sa sa-up sa-d2">MY<br><em>PROJECTS</em></h1>
+    <p class="page-hero-sub sa sa-up sa-d3">Hand-picked work that defines the craft</p>
+  </div>
+</section>
+
+<section class="portfolio-section" id="work" style="padding-top:80px;">
+  <div class="portfolio-filter reveal sa sa-up sa-d4">
+    <button class="filter-btn active" type="button" data-filter="film">Film</button>
+    <button class="filter-btn" type="button" data-filter="motion-graphics">Motion Graphics</button>
+    <button class="filter-btn" type="button" data-filter="illustration">Illustrations</button>
+    <button class="filter-btn" type="button" data-filter="editing">Editing</button>
+    <button class="filter-btn" type="button" data-filter="composition">Compositing</button>
+    <button class="filter-btn" type="button" data-filter="typography">Typography</button>
+    <button class="filter-btn" type="button" data-filter="graphics-design">Graphic Design</button>
+    <button class="filter-btn" type="button" data-filter="ai">AI</button>
+    <button class="filter-btn" type="button" data-filter="web-design">Web Design</button>
+    <button class="filter-btn" type="button" data-filter="storyboard">Storyboard</button>
+  </div>
+  <div class="portfolio-grid reveal">
+    <div class="project-card card-wide sa sa-up sa-d1" data-num="01" data-category="film">
+      <div class="project-thumb" style="position:absolute;inset:0;background-size:cover;background-position:center top;"><img src="assets/S-2 TB.png" class="img-fluid" alt="She Never Left The Classroom short film thumbnail"/></div>
+      <div class="project-visual"><svg viewBox="0 0 100 60"><rect x="10" y="10" width="80" height="40" rx="1" style="stroke:rgba(10,26,255,.8);stroke-width:.5"/><polygon points="40,20 60,30 40,40" style="fill:rgba(10,26,255,.4);stroke:none"/></svg></div>
+      <div class="project-overlay"><span class="project-tag">Film · VFX</span><h3 class="project-name">She Never Left The Classroom - Short Film</h3><a href="https://youtu.be/pOgp91AZtjQ" target="_blank" rel="noopener noreferrer" class="project-link">View Project <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg></a></div>
+    </div>
+    <div class="project-card card-poster sa sa-left sa-d2" data-num="02" data-category="graphics-design">
+      <div class="project-thumb" style="position:absolute;inset:0;background-size:cover;background-position:center top;"><img src="assets/P-COVER.png" class="img-fluid" alt="Graphic design portfolio cover thumbnail"/></div>
+      <div class="project-visual"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="20" style="stroke:rgba(10,26,255,.6)"/><circle cx="30" cy="30" r="10" style="stroke:rgba(31,59,255,.4)"/></svg></div>
+      <div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">PORTFOLIO - Graphic Design</h3><a href="https://www.behance.net/gallery/241021765/PORTFOLIO-2025-GRAPHIC-DESIGN" target="_blank" rel="noopener noreferrer" class="project-link">View Project <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg></a></div>
+    </div>
+    <div class="project-card card-square sa sa-right sa-d2" data-num="03" data-category="editing">
+      <div class="project-thumb" style="position:absolute;inset:0;background-size:cover;background-position:center;"><img src="assets/TB-1.png" class="img-fluid" alt="Story based edit thumbnail"/></div>
+      <div class="project-visual"><svg viewBox="0 0 60 60"><rect x="10" y="10" width="40" height="40"/><line x1="10" y1="30" x2="50" y2="30" style="stroke:rgba(10,26,255,.8)"/><line x1="30" y1="10" x2="30" y2="50" style="stroke:rgba(10,26,255,.5)"/></svg></div>
+      <div class="project-overlay"><span class="project-tag">Film Edit</span><h3 class="project-name">Story Based Edit</h3><a href="https://youtu.be/HTkUfd1SYxc" target="_blank" rel="noopener noreferrer" class="project-link">View Project <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg></a></div>
+    </div>
+    <div class="project-card card-strip sa sa-up sa-d3" data-num="04" data-category="typography">
+      <div class="project-thumb" style="position:absolute;inset:0;background-size:cover;background-position:center;"><img src="assets/TB-2.png" class="img-fluid" alt="2D and 3D typography project thumbnail"/></div>
+      <div class="project-visual"><svg viewBox="0 0 60 60"><path d="M10 50 Q20 10 30 30 Q40 50 50 10" style="stroke:rgba(10,26,255,.8);fill:none"/></svg></div>
+      <div class="project-overlay"><span class="project-tag">Motion Graphics</span><h3 class="project-name">2D + 3D Typography</h3><a href="https://youtu.be/ZoRKntjSG9A" target="_blank" rel="noopener noreferrer" class="project-link">View Project <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg></a></div>
+    </div>
+    <div class="project-card card-tall sa sa-left sa-d4" data-num="05" data-category="composition">
+      <div class="project-thumb" style="position:absolute;inset:0;background-size:cover;background-position:center;"><img src="assets/TB-3.png" class="img-fluid" alt="VFX compositing edit thumbnail"/></div>
+      <div class="project-visual"><svg viewBox="0 0 60 60"><polygon points="30,5 55,50 5,50" style="stroke:rgba(10,26,255,.6);fill:rgba(10,26,255,.05)"/></svg></div>
+      <div class="project-overlay"><span class="project-tag">VFX · Compositing</span><h3 class="project-name">The Best Edit</h3><a href="https://youtu.be/E50aulDcBo4" target="_blank" rel="noopener noreferrer" class="project-link">View Project <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg></a></div>
+    </div>
+    <div class="project-card project-card-image card-poster sa sa-up sa-d1" data-num="06" data-category="illustration"><div class="project-thumb"><img src="assets/P-COVER.png" class="img-fluid" alt="Graphic design preview"/></div><div class="project-overlay"><span class="project-tag">Design</span><h3 class="project-name">Design Preview</h3></div></div>
+    <div class="project-card project-card-image card-wide sa sa-up sa-d2" data-num="07" data-category="archive"><div class="project-thumb"><img src="assets/TB-1.png" class="img-fluid" alt="Film edit preview"/></div><div class="project-overlay"><span class="project-tag">Film</span><h3 class="project-name">Edit Frame</h3></div></div>
+    <div class="project-card project-card-image card-square sa sa-up sa-d3" data-num="08" data-category="motion-graphics"><div class="project-thumb"><img src="assets/TB-2.png" class="img-fluid" alt="Motion graphics preview"/></div><div class="project-overlay"><span class="project-tag">Motion</span><h3 class="project-name">Motion Still</h3></div></div>
+    <div class="project-card project-card-image card-strip sa sa-up sa-d4" data-num="09" data-category="ai"><div class="project-thumb"><img src="assets/TB-3.png" class="img-fluid" alt="VFX preview"/></div><div class="project-overlay"><span class="project-tag">VFX</span><h3 class="project-name">VFX Frame</h3></div></div>
+    <div class="project-card project-card-image card-square sa sa-up sa-d1" data-num="10" data-category="film"><div class="project-thumb"><img src="assets/TB-1.png" class="img-fluid" alt="Cinematic film frame preview"/></div><div class="project-overlay"><span class="project-tag">Film</span><h3 class="project-name">Cinematic Frame</h3></div></div>
+    <div class="project-card project-card-image card-tall sa sa-up sa-d2" data-num="11" data-category="motion-graphics"><div class="project-thumb"><img src="assets/TB-2.png" class="img-fluid" alt="Animated motion layout preview"/></div><div class="project-overlay"><span class="project-tag">Motion Graphics</span><h3 class="project-name">Animated Layout</h3></div></div>
+    <div class="project-card project-card-image card-wide sa sa-up sa-d3" data-num="12" data-category="illustration"><div class="project-thumb"><img src="assets/Magazine Cover.png" class="img-fluid" alt="Illustration style cover preview"/></div><div class="project-overlay"><span class="project-tag">Illustration</span><h3 class="project-name">Cover Study</h3></div></div>
+    <div class="project-card project-card-image card-strip sa sa-up sa-d4" data-num="13" data-category="editing"><div class="project-thumb"><img src="assets/S-2 TB.png" class="img-fluid" alt="Editing timeline sequence preview"/></div><div class="project-overlay"><span class="project-tag">Editing</span><h3 class="project-name">Sequence Cut</h3></div></div>
+    <div class="project-card project-card-image card-wide sa sa-up sa-d1" data-num="14" data-category="composition"><div class="project-thumb"><img src="assets/TB-3.png" class="img-fluid" alt="Composited visual scene preview"/></div><div class="project-overlay"><span class="project-tag">Composition</span><h3 class="project-name">Layer Build</h3></div></div>
+    <div class="project-card project-card-image card-poster sa sa-up sa-d2" data-num="15" data-category="typography"><div class="project-thumb"><img src="assets/TB-2.png" class="img-fluid" alt="Typography poster preview"/></div><div class="project-overlay"><span class="project-tag">Typography</span><h3 class="project-name">Type Poster</h3></div></div>
+    <div class="project-card project-card-image card-strip sa sa-up sa-d3" data-num="16" data-category="graphics-design"><div class="project-thumb"><img src="assets/P-COVER.png" class="img-fluid" alt="Graphics design layout preview"/></div><div class="project-overlay"><span class="project-tag">Graphics Design</span><h3 class="project-name">Identity Layout</h3></div></div>
+    <div class="project-card project-card-image card-square sa sa-up sa-d4" data-num="17" data-category="ai"><div class="project-thumb"><img src="assets/Magazine Cover.png" class="img-fluid" alt="AI concept image preview"/></div><div class="project-overlay"><span class="project-tag">AI</span><h3 class="project-name">Concept Pass</h3></div></div>
+    <div class="project-card project-card-image card-wide sa sa-up sa-d1" data-num="18" data-category="web-design"><div class="project-thumb"><img src="assets/P-COVER.png" class="img-fluid" alt="Web design hero layout preview"/></div><div class="project-overlay"><span class="project-tag">Web Design</span><h3 class="project-name">Landing Visual</h3></div></div>
+    <div class="project-card project-card-image card-tall sa sa-up sa-d2" data-num="19" data-category="web-design"><div class="project-thumb"><img src="assets/TB-1.png" class="img-fluid" alt="Web design mobile layout preview"/></div><div class="project-overlay"><span class="project-tag">Web Design</span><h3 class="project-name">Mobile Flow</h3></div></div>
+    <div class="project-card project-card-image card-poster sa sa-up sa-d3" data-num="20" data-category="storyboard"><div class="project-thumb"><img src="assets/S-2 TB.png" class="img-fluid" alt="Storyboard panel preview"/></div><div class="project-overlay"><span class="project-tag">Storyboard</span><h3 class="project-name">Scene Board</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d1" data-num="21" data-category="film"><div class="project-thumb"><img src="assets/TB-2.png" class="img-fluid" alt="Film atmosphere preview"/></div><div class="project-overlay"><span class="project-tag">Film</span><h3 class="project-name">Mood Shot</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d2" data-num="22" data-category="film"><div class="project-thumb"><img src="assets/TB-3.png" class="img-fluid" alt="Film scene preview"/></div><div class="project-overlay"><span class="project-tag">Film</span><h3 class="project-name">Final Frame</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d3" data-num="23" data-category="motion-graphics"><div class="project-thumb"><img src="assets/P-COVER.png" class="img-fluid" alt="Motion graphics frame preview"/></div><div class="project-overlay"><span class="project-tag">Motion Graphics</span><h3 class="project-name">Shape System</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d4" data-num="24" data-category="motion-graphics"><div class="project-thumb"><img src="assets/S-2 TB.png" class="img-fluid" alt="Motion graphics kinetic preview"/></div><div class="project-overlay"><span class="project-tag">Motion Graphics</span><h3 class="project-name">Kinetic Loop</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d1" data-num="25" data-category="illustration"><div class="project-thumb"><img src="assets/TB-1.png" class="img-fluid" alt="Illustration panel preview"/></div><div class="project-overlay"><span class="project-tag">Illustration</span><h3 class="project-name">Panel Study</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d2" data-num="26" data-category="illustration"><div class="project-thumb"><img src="assets/TB-2.png" class="img-fluid" alt="Illustration color preview"/></div><div class="project-overlay"><span class="project-tag">Illustration</span><h3 class="project-name">Color Pass</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d3" data-num="27" data-category="illustration"><div class="project-thumb"><img src="assets/TB-3.png" class="img-fluid" alt="Illustration concept preview"/></div><div class="project-overlay"><span class="project-tag">Illustration</span><h3 class="project-name">Concept Board</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d4" data-num="28" data-category="illustration"><div class="project-thumb"><img src="assets/S-2 TB.png" class="img-fluid" alt="Illustration scene preview"/></div><div class="project-overlay"><span class="project-tag">Illustration</span><h3 class="project-name">Scene Sketch</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d1" data-num="29" data-category="editing"><div class="project-thumb"><img src="assets/TB-2.png" class="img-fluid" alt="Editing rhythm preview"/></div><div class="project-overlay"><span class="project-tag">Editing</span><h3 class="project-name">Rhythm Cut</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d2" data-num="30" data-category="editing"><div class="project-thumb"><img src="assets/TB-3.png" class="img-fluid" alt="Editing short-form preview"/></div><div class="project-overlay"><span class="project-tag">Editing</span><h3 class="project-name">Short Form</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d3" data-num="31" data-category="editing"><div class="project-thumb"><img src="assets/P-COVER.png" class="img-fluid" alt="Editing montage preview"/></div><div class="project-overlay"><span class="project-tag">Editing</span><h3 class="project-name">Montage Pass</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d4" data-num="32" data-category="composition"><div class="project-thumb"><img src="assets/S-2 TB.png" class="img-fluid" alt="Compositing horizontal preview"/></div><div class="project-overlay"><span class="project-tag">Compositing</span><h3 class="project-name">Scene Blend</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d1" data-num="33" data-category="composition"><div class="project-thumb"><img src="assets/P-COVER.png" class="img-fluid" alt="Compositing breakdown preview"/></div><div class="project-overlay"><span class="project-tag">Compositing</span><h3 class="project-name">Breakdown</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d2" data-num="34" data-category="graphics-design"><div class="project-thumb"><img src="assets/TB-1.png" class="img-fluid" alt="Graphic design card preview"/></div><div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">Card Layout</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d3" data-num="35" data-category="graphics-design"><div class="project-thumb"><img src="assets/TB-2.png" class="img-fluid" alt="Graphic design poster preview"/></div><div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">Poster Grid</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d4" data-num="36" data-category="graphics-design"><div class="project-thumb"><img src="assets/TB-3.png" class="img-fluid" alt="Graphic design social preview"/></div><div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">Social Tile</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d1" data-num="37" data-category="graphics-design"><div class="project-thumb"><img src="assets/S-2 TB.png" class="img-fluid" alt="Graphic design cover preview"/></div><div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">Cover Lockup</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d2" data-num="38" data-category="graphics-design"><div class="project-thumb"><img src="assets/Magazine Cover.png" class="img-fluid" alt="Graphic design magazine preview"/></div><div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">Magazine Crop</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d3" data-num="39" data-category="graphics-design"><div class="project-thumb"><img src="assets/P-COVER.png" class="img-fluid" alt="Graphic design brand preview"/></div><div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">Brand Panel</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d4" data-num="40" data-category="graphics-design"><div class="project-thumb"><img src="assets/TB-1.png" class="img-fluid" alt="Graphic design thumbnail preview"/></div><div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">Thumb Set</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d1" data-num="41" data-category="graphics-design"><div class="project-thumb"><img src="assets/TB-2.png" class="img-fluid" alt="Graphic design visual preview"/></div><div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">Visual Study</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d2" data-num="42" data-category="ai"><div class="project-thumb"><img src="assets/S-2 TB.png" class="img-fluid" alt="AI center concept preview"/></div><div class="project-overlay"><span class="project-tag">AI</span><h3 class="project-name">Generated Scene</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d3" data-num="43" data-category="graphics-design"><div class="project-thumb"><img src="assets/TB-3.png" class="img-fluid" alt="Graphic design type preview"/></div><div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">Type Layout</h3></div></div>
+    <div class="project-card project-card-image sa sa-up sa-d4" data-num="44" data-category="graphics-design"><div class="project-thumb"><img src="assets/Magazine Cover.png" class="img-fluid" alt="Graphic design editorial preview"/></div><div class="project-overlay"><span class="project-tag">Graphic Design</span><h3 class="project-name">Editorial Spread</h3></div></div>
+  </div>
+</section>
+<footer class="molten-footer">
+  <a href="index.html" class="footer-logo">MOʟTEN<span>.</span></a>
+  <div class="footer-copy">© 2026 — MOʟTEN. All rights reserved.</div>
+  <div class="footer-social">
+    <a href="https://www.youtube.com/@molten_fx" target="_blank" rel="noopener noreferrer">YouTube</a>
+    <a href="https://www.instagram.com/molten_fx/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    <a href="https://www.behance.net/Khushank-Gautam" target="_blank" rel="noopener noreferrer">Behance</a>
+    <a href="https://www.linkedin.com/in/khushank-gautam/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    <a href="https://payhip.com/moltenfx" target="_blank" rel="noopener noreferrer">Payhip</a>
+    <a href="https://discordapp.com/users/1242061395521175622" target="_blank" rel="noopener noreferrer">Discord</a>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="assets/icon.png" type="image/png">
+  <title>MOʟTEN — Contact</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Space starfield canvas -->
+<canvas id="spaceCanvas"></canvas>
+<div class="shooting-star" id="shootingStar"></div>
+<div id="cursor-dot"></div>
+<div id="cursor-square"></div>
+
+<!-- NAVBAR -->
+<nav class="molten-nav">
+  <a href="index.html" class="nav-logo">MOʟTEN<span>.</span></a>
+  <ul class="nav-links-center">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html" class="nav-active">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="contact.html" class="nav-active" class="nav-cta"><span>Hire Me</span></a>
+    <button class="nav-hamburger" id="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="index.html" onclick="toggleMenu()">Home</a>
+  <a href="services.html" onclick="toggleMenu()">Services</a>
+  <a href="projects.html" onclick="toggleMenu()">Projects</a>
+  <a href="about.html" onclick="toggleMenu()">About</a>
+  <a href="contact.html" class="nav-active" onclick="toggleMenu()">Contact</a>
+  <a href="contact.html" class="nav-active" class="mobile-cta" onclick="toggleMenu()">Hire Me</a>
+</div>
+<section class="page-hero-section">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="space-planet space-planet-1"></div>
+  <div class="space-planet space-planet-2"></div>
+  <div class="space-orbit space-orbit-1"></div>
+  <div class="space-orbit space-orbit-2"></div>
+  <div class="page-hero-content text-center">
+    <span class="section-tag sa sa-up sa-d1">005 — Let's Talk</span>
+    <h1 class="page-hero-title sa sa-up sa-d2">GET IN<br><em>TOUCH</em></h1>
+    <p class="page-hero-sub sa sa-up sa-d3">Available for freelance, collaborations &amp; part-time roles</p>
+  </div>
+</section>
+
+<section class="contact-section" id="contact" style="padding-top:80px;">
+  <div class="contact-bg"></div>
+  <div class="contact-inner">
+    <div class="reveal">
+      <span class="section-tag sa sa-up sa-d1">005 — Let's Talk</span>
+      <h2 class="contact-headline sa sa-up sa-d2">LET'S CREATE<br>SOMETHING <em>INSANE</em><br>TOGETHER</h2>
+      <p class="contact-sub sa sa-up sa-d3">Available for freelance, collaborations &amp; part-time roles</p>
+    </div>
+    <form class="contact-form reveal" id="contactForm" style="transition-delay:.2s">
+      <div class="row g-3 mb-0">
+        <div class="col-md-6">
+          <div class="form-group sa sa-left sa-d2">
+            <label for="contactName">Your Name</label>
+            <input id="contactName" name="name" type="text" placeholder="Alex Monroe" autocomplete="name" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group sa sa-right sa-d2">
+            <label for="contactEmail">Email Address</label>
+            <input id="contactEmail" name="email" type="email" placeholder="alexstudio@gmail.com" autocomplete="email" required>
+          </div>
+        </div>
+      </div>
+      <div class="form-group sa sa-up sa-d3 mt-3">
+        <label for="projectType">Project Type</label>
+        <input id="projectType" name="projectType" type="text" placeholder="Short Film / Brand Campaign / Music Video..." required>
+      </div>
+      <div class="form-group sa sa-up sa-d4 mt-3">
+        <label for="projectMessage">Your Message</label>
+        <textarea id="projectMessage" name="message" placeholder="Tell me about your project, timeline, and vision..." required></textarea>
+      </div>
+      <button class="form-submit sa sa-pop sa-d5 mt-3" type="submit"><span>Send It →</span></button>
+      <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<section class="contact-channels-section">
+  <div class="contact-channels-inner reveal">
+    <div class="text-center" style="margin-bottom:48px;">
+      <span class="section-tag sa sa-up sa-d1">Find Me Online</span>
+      <h2 class="section-title sa sa-up sa-d2">CONNECT</h2>
+    </div>
+    <div class="channels-grid">
+      <a href="https://www.youtube.com/@molten_fx" target="_blank" rel="noopener noreferrer" class="channel-card sa sa-pop sa-d1">
+        <span class="channel-label">YouTube</span>
+        <span class="channel-handle">@molten_fx</span>
+        <svg class="channel-arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg>
+      </a>
+      <a href="https://www.instagram.com/molten_fx/" target="_blank" rel="noopener noreferrer" class="channel-card sa sa-pop sa-d2">
+        <span class="channel-label">Instagram</span>
+        <span class="channel-handle">@molten_fx</span>
+        <svg class="channel-arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg>
+      </a>
+      <a href="https://www.behance.net/Khushank-Gautam" target="_blank" rel="noopener noreferrer" class="channel-card sa sa-pop sa-d3">
+        <span class="channel-label">Behance</span>
+        <span class="channel-handle">Khushank-Gautam</span>
+        <svg class="channel-arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/khushank-gautam/" target="_blank" rel="noopener noreferrer" class="channel-card sa sa-pop sa-d4">
+        <span class="channel-label">LinkedIn</span>
+        <span class="channel-handle">khushank-gautam</span>
+        <svg class="channel-arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg>
+      </a>
+      <a href="https://payhip.com/moltenfx" target="_blank" rel="noopener noreferrer" class="channel-card sa sa-pop sa-d1">
+        <span class="channel-label">Payhip</span>
+        <span class="channel-handle">moltenfx</span>
+        <svg class="channel-arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg>
+      </a>
+      <a href="https://discordapp.com/users/1242061395521175622" target="_blank" rel="noopener noreferrer" class="channel-card sa sa-pop sa-d2">
+        <span class="channel-label">Discord</span>
+        <span class="channel-handle">MOʟTEN</span>
+        <svg class="channel-arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9,3 14,8 9,13"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+<footer class="molten-footer">
+  <a href="index.html" class="footer-logo">MOʟTEN<span>.</span></a>
+  <div class="footer-copy">© 2026 — MOʟTEN. All rights reserved.</div>
+  <div class="footer-social">
+    <a href="https://www.youtube.com/@molten_fx" target="_blank" rel="noopener noreferrer">YouTube</a>
+    <a href="https://www.instagram.com/molten_fx/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    <a href="https://www.behance.net/Khushank-Gautam" target="_blank" rel="noopener noreferrer">Behance</a>
+    <a href="https://www.linkedin.com/in/khushank-gautam/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    <a href="https://payhip.com/moltenfx" target="_blank" rel="noopener noreferrer">Payhip</a>
+    <a href="https://discordapp.com/users/1242061395521175622" target="_blank" rel="noopener noreferrer">Discord</a>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
