@@ -596,4 +596,127 @@ document.addEventListener('mouseenter', () => {
     document.addEventListener('visibilitychange',()=>{if(!document.hidden)lastTime=performance.now();});
   })();
 
+  /* ── SKILL BAR FILL on scroll into view ── */
+  (function () {
+    const cards = document.querySelectorAll('.skill-card');
+    if (!cards.length) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); } });
+    }, { threshold: 0.3 });
+    cards.forEach(c => obs.observe(c));
+  })();
+
+  /* ================================================================
+     LIGHTBOX — graphics-design & illustration cards
+  ================================================================ */
+  (function () {
+    const overlay  = document.getElementById('lbOverlay');
+    if (!overlay) return;
+
+    const backdrop = document.getElementById('lbBackdrop');
+    const closeBtn = document.getElementById('lbClose');
+    const prevBtn  = document.getElementById('lbPrev');
+    const nextBtn  = document.getElementById('lbNext');
+    const lbImg    = document.getElementById('lbImg');
+    const spinner  = document.getElementById('lbSpinner');
+    const lbTitle  = document.getElementById('lbTitle');
+    const lbTag    = document.getElementById('lbTag');
+    const lbCtr    = document.getElementById('lbCounter');
+
+    // Build ordered list of all lightbox cards in current visible tab
+    let cards = [];
+    let current = 0;
+
+    function gatherCards() {
+      cards = Array.from(
+        document.querySelectorAll('.project-card[data-lightbox="true"]:not(.is-hidden)')
+      );
+    }
+
+    function getCatLabel(card) {
+      const cat = card.dataset.category || '';
+      if (cat === 'graphics-design')  return 'Graphic Design';
+      if (cat === 'illustration')     return 'Illustration';
+      return cat;
+    }
+
+    function loadImage(src) {
+      lbImg.classList.add('lb-loading');
+      spinner.classList.add('lb-spinning');
+      const tmp = new Image();
+      tmp.onload = () => {
+        lbImg.src = src;
+        lbImg.classList.remove('lb-loading');
+        spinner.classList.remove('lb-spinning');
+      };
+      tmp.onerror = () => {
+        lbImg.src = src;
+        lbImg.classList.remove('lb-loading');
+        spinner.classList.remove('lb-spinning');
+      };
+      tmp.src = src;
+    }
+
+    function show(idx) {
+      gatherCards();
+      if (!cards.length) return;
+      current = (idx + cards.length) % cards.length;
+      const card = cards[current];
+
+      const img   = card.dataset.lbImg   || '';
+      const title = card.dataset.lbTitle || '';
+      const tag   = getCatLabel(card);
+
+      loadImage(img);
+      lbTitle.textContent = title;
+      lbTag.textContent   = tag;
+      lbCtr.textContent   = `${current + 1} / ${cards.length}`;
+      lbImg.alt           = title;
+
+      overlay.classList.add('lb-open');
+      document.body.style.overflow = 'hidden';
+
+      // Show/hide nav arrows
+      prevBtn.style.display = cards.length > 1 ? 'flex' : 'none';
+      nextBtn.style.display = cards.length > 1 ? 'flex' : 'none';
+    }
+
+    function close() {
+      overlay.classList.remove('lb-open');
+      document.body.style.overflow = '';
+      setTimeout(() => { lbImg.src = ''; }, 350);
+    }
+
+    // Open on card click
+    document.addEventListener('click', e => {
+      const card = e.target.closest('.project-card[data-lightbox="true"]');
+      if (!card) return;
+      gatherCards();
+      const idx = cards.indexOf(card);
+      show(idx >= 0 ? idx : 0);
+    });
+
+    // Navigation
+    nextBtn.addEventListener('click',  e => { e.stopPropagation(); show(current + 1); });
+    prevBtn.addEventListener('click',  e => { e.stopPropagation(); show(current - 1); });
+    closeBtn.addEventListener('click', close);
+    backdrop.addEventListener('click', close);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+      if (!overlay.classList.contains('lb-open')) return;
+      if (e.key === 'Escape')     close();
+      if (e.key === 'ArrowRight') show(current + 1);
+      if (e.key === 'ArrowLeft')  show(current - 1);
+    });
+
+    // Touch swipe
+    let touchX = 0;
+    overlay.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+    overlay.addEventListener('touchend',   e => {
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 50) dx < 0 ? show(current + 1) : show(current - 1);
+    });
+  })();
+
 });
