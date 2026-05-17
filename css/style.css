@@ -2452,3 +2452,374 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 @media (max-width: 768px) {
   .contact-cta-only { padding: 100px 20px 120px; min-height: 60vh; }
 }
+
+/* ================================================================
+   ILLUSTRATION SHOWCASE SECTIONS
+   7 full-screen split sections with lightbox + scroll animations
+================================================================ */
+
+/* ── Shared section base ── */
+.showcase-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 100px 0;
+  border-top: 1px solid var(--card-border);
+}
+
+/* Alternating subtle background tints */
+.showcase-s1 { background: rgba(5,7,18,0.0); }
+.showcase-s2 { background: rgba(10,15,35,0.5); }
+.showcase-s3 { background: rgba(5,7,18,0.0); }
+.showcase-s4 { background: rgba(10,15,35,0.5); }
+.showcase-s5 { background: rgba(5,7,18,0.0); }
+.showcase-s6 { background: rgba(10,15,35,0.5); }
+.showcase-s7 { background: rgba(5,7,18,0.0); }
+
+/* Giant watermark number */
+.showcase-bg-text {
+  position: absolute;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(160px, 28vw, 320px);
+  color: rgba(10,26,255,0.03);
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  user-select: none;
+}
+
+/* ── Split layout ── */
+.showcase-inner {
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 60px;
+  display: grid;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+.showcase-left  { grid-template-columns: 1fr 1.1fr; }
+.showcase-right { grid-template-columns: 1.1fr 1fr; }
+
+/* ── Image card ── */
+.showcase-img-wrap { position: relative; }
+.showcase-img-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  cursor: zoom-in;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+.ratio-3-4 { aspect-ratio: 3/4; }
+.ratio-4-3 { aspect-ratio: 4/3; }
+
+.showcase-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+}
+.showcase-img-card:hover .showcase-img { transform: scale(1.04); }
+
+/* Image hover overlay */
+.showcase-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(3,4,12,0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.35s ease;
+  border-radius: 12px;
+}
+.showcase-img-card:hover .showcase-img-overlay {
+  background: rgba(3,4,12,0.45);
+}
+.showcase-zoom-icon {
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22,1,0.36,1);
+  background: rgba(10,26,255,0.25);
+  border: 1px solid rgba(10,26,255,0.5);
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.showcase-zoom-icon svg { width: 22px; stroke: #fff; }
+.showcase-img-card:hover .showcase-zoom-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Tag below image */
+.showcase-img-tag {
+  position: absolute;
+  bottom: -12px;
+  left: 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  background: var(--bg);
+  border: 1px solid rgba(10,26,255,0.3);
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+/* ── Text content ── */
+.showcase-text-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.showcase-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: rgba(10,26,255,0.5);
+}
+.showcase-heading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 6vw, 88px);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  color: var(--white);
+  margin: 4px 0 0;
+}
+.showcase-heading em {
+  font-style: normal;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+  color: transparent;
+}
+.showcase-divider {
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  margin: 4px 0;
+}
+.showcase-para {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--grey-mid);
+  line-height: 1.75;
+  max-width: 480px;
+  margin: 0;
+}
+.showcase-meta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--card-border);
+}
+.showcase-meta-item { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 7px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+}
+.meta-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--accent2);
+}
+
+/* ── Section 7: Business cards ── */
+.showcase-s7-inner {
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 60px;
+  position: relative;
+  z-index: 2;
+}
+.showcase-s7-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+  margin-bottom: 72px;
+}
+.showcase-s7-header .showcase-heading { grid-column: 1; }
+.showcase-s7-header .showcase-para { grid-column: 2; align-self: end; padding-top: 16px; }
+.showcase-biz-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+.showcase-biz-card {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  cursor: zoom-in;
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), border-color 0.3s;
+}
+.showcase-biz-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: rgba(10,26,255,0.4);
+}
+.showcase-biz-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+.showcase-biz-card:hover img { transform: scale(1.06); }
+.showcase-biz-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(3,4,12,0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+.showcase-biz-card:hover .showcase-biz-overlay { background: rgba(3,4,12,0.5); }
+.showcase-biz-card:hover .showcase-zoom-icon { opacity:1; transform:scale(1); }
+.showcase-biz-card .showcase-zoom-icon { width:40px; height:40px; }
+.showcase-biz-card .showcase-zoom-icon svg { width:16px; }
+.showcase-biz-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 12px 10px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--white);
+  background: linear-gradient(to top, rgba(3,4,12,0.9) 0%, transparent 100%);
+  text-align: center;
+}
+
+/* ── Decorative elements ── */
+.showcase-line-deco {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(10,26,255,0.2) 30%, rgba(10,26,255,0.2) 70%, transparent);
+  pointer-events: none;
+}
+.showcase-dots-deco {
+  position: absolute;
+  right: 60px; top: 60px;
+  width: 120px; height: 120px;
+  background-image: radial-gradient(circle, rgba(10,26,255,0.18) 1px, transparent 1px);
+  background-size: 14px 14px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+.showcase-circle-deco {
+  position: absolute;
+  right: 80px; bottom: 80px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(10,26,255,0.08);
+  pointer-events: none;
+}
+.showcase-circle-deco::after {
+  content: '';
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(10,26,255,0.05);
+}
+.showcase-grid-deco {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(10,26,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10,26,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.showcase-scan-deco {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(10,26,255,0.4), transparent);
+  animation: scScan 4s ease-in-out infinite;
+  pointer-events: none;
+  top: 0;
+}
+@keyframes scScan {
+  0%   { top: 10%;  opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 90%; opacity: 0; }
+}
+
+/* ── Scroll reveal animations ── */
+.sc-reveal {
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1),
+              transform 0.8s cubic-bezier(0.22,1,0.36,1);
+}
+.sc-from-left  { transform: translateX(-60px); }
+.sc-from-right { transform: translateX(60px); }
+.sc-from-bottom{ transform: translateY(50px); }
+
+/* Fade in */
+.sc-reveal.sc-in {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Fade out — reversed direction, faster */
+.sc-reveal.sc-out {
+  opacity: 0;
+  transition: opacity 0.55s cubic-bezier(0.4,0,1,1),
+              transform 0.55s cubic-bezier(0.4,0,1,1);
+}
+.sc-reveal.sc-out.sc-from-left  { transform: translateX(-40px); }
+.sc-reveal.sc-out.sc-from-right { transform: translateX(40px); }
+.sc-reveal.sc-out.sc-from-bottom{ transform: translateY(30px); }
+
+/* Stagger second child */
+.showcase-inner .sc-reveal:nth-child(2),
+.showcase-s7-inner .sc-reveal:nth-child(2) {
+  transition-delay: 0.18s;
+}
+
+/* ── Lightbox trigger on showcase images ── */
+.showcase-img-card[data-lightbox],
+.showcase-biz-card[data-lightbox] { cursor: zoom-in; }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .showcase-inner { padding: 0 32px; gap: 48px; }
+  .showcase-left, .showcase-right { grid-template-columns: 1fr; }
+  .showcase-right .showcase-text-wrap { order: -1; }
+  .showcase-section { min-height: unset; padding: 80px 0; }
+  .showcase-s7-inner { padding: 0 32px; }
+  .showcase-biz-grid { grid-template-columns: repeat(3, 1fr); }
+  .showcase-s7-header { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .showcase-inner { padding: 0 20px; gap: 40px; }
+  .showcase-s7-inner { padding: 0 20px; }
+  .showcase-biz-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .showcase-heading { font-size: clamp(38px, 10vw, 60px); }
+  .showcase-bg-text { font-size: 120px; opacity: 0.015; }
+}

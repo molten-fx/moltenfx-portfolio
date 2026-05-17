@@ -719,4 +719,123 @@ document.addEventListener('mouseenter', () => {
     });
   })();
 
+  /* ── SHOWCASE SECTION SCROLL REVEAL + FADE OUT ── */
+  (function () {
+    const els = document.querySelectorAll('.sc-reveal');
+    if (!els.length) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          // Fade in: remove out, add in
+          e.target.classList.remove('sc-out');
+          e.target.classList.add('sc-in');
+        } else if (e.target.classList.contains('sc-in')) {
+          // Fade out only after it has already faded in once
+          e.target.classList.remove('sc-in');
+          e.target.classList.add('sc-out');
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(el => obs.observe(el));
+  })();
+
+  /* ── SHOWCASE LIGHTBOX — image cards and biz cards ── */
+  (function () {
+    // Re-use the existing lightbox elements
+    const overlay = document.getElementById('lbOverlay');
+    if (!overlay) return;
+
+    document.addEventListener('click', e => {
+      // Check for showcase image card or biz card click
+      const card = e.target.closest('.showcase-img-card[data-lightbox], .showcase-biz-card[data-lightbox]');
+      if (!card) return;
+
+      const img   = card.dataset.lbImg   || card.querySelector('img')?.src || '';
+      const title = card.dataset.lbTitle || '';
+
+      const lbImg   = document.getElementById('lbImg');
+      const lbTitle = document.getElementById('lbTitle');
+      const lbTag   = document.getElementById('lbTag');
+      const lbCtr   = document.getElementById('lbCounter');
+      const spinner = document.getElementById('lbSpinner');
+
+      if (!lbImg) return;
+
+      // Gather siblings for prev/next
+      const section = card.closest('.showcase-section');
+      const allCards = section
+        ? Array.from(section.querySelectorAll('[data-lightbox]'))
+        : [card];
+      const idx = allCards.indexOf(card);
+
+      // Store on overlay for nav use
+      overlay._showcaseCards = allCards;
+      overlay._showcaseIdx   = idx;
+
+      function openIdx(i) {
+        const c   = allCards[i];
+        const src = c.dataset.lbImg || c.querySelector('img')?.src || '';
+        const ttl = c.dataset.lbTitle || '';
+        lbImg.classList.add('lb-loading');
+        if (spinner) spinner.classList.add('lb-spinning');
+        const tmp   = new Image();
+        tmp.onload = tmp.onerror = () => {
+          lbImg.src = src;
+          lbImg.classList.remove('lb-loading');
+          if (spinner) spinner.classList.remove('lb-spinning');
+        };
+        tmp.src = src;
+        if (lbTitle) lbTitle.textContent = ttl;
+        if (lbTag)   lbTag.textContent   = 'Illustration';
+        if (lbCtr)   lbCtr.textContent   = `${i + 1} / ${allCards.length}`;
+        overlay._showcaseIdx = i;
+        const prev = document.getElementById('lbPrev');
+        const next = document.getElementById('lbNext');
+        if (prev) prev.style.display = allCards.length > 1 ? 'flex' : 'none';
+        if (next) next.style.display = allCards.length > 1 ? 'flex' : 'none';
+      }
+
+      openIdx(idx);
+      overlay.classList.add('lb-open');
+      document.body.style.overflow = 'hidden';
+      // Flag so the main lightbox nav also works
+      overlay._isShowcase = true;
+    });
+
+    // Patch nav buttons to also handle showcase mode
+    const prev = document.getElementById('lbPrev');
+    const next = document.getElementById('lbNext');
+    if (prev) prev.addEventListener('click', () => {
+      if (!overlay._isShowcase || !overlay._showcaseCards) return;
+      const n = (overlay._showcaseIdx - 1 + overlay._showcaseCards.length) % overlay._showcaseCards.length;
+      overlay._showcaseIdx = n;
+      const c = overlay._showcaseCards[n];
+      const lbImg = document.getElementById('lbImg');
+      if (lbImg) { lbImg.src = c.dataset.lbImg || c.querySelector('img')?.src || ''; }
+      const lbTitle = document.getElementById('lbTitle');
+      if (lbTitle) lbTitle.textContent = c.dataset.lbTitle || '';
+      const lbCtr = document.getElementById('lbCounter');
+      if (lbCtr) lbCtr.textContent = `${n+1} / ${overlay._showcaseCards.length}`;
+    });
+    if (next) next.addEventListener('click', () => {
+      if (!overlay._isShowcase || !overlay._showcaseCards) return;
+      const n = (overlay._showcaseIdx + 1) % overlay._showcaseCards.length;
+      overlay._showcaseIdx = n;
+      const c = overlay._showcaseCards[n];
+      const lbImg = document.getElementById('lbImg');
+      if (lbImg) { lbImg.src = c.dataset.lbImg || c.querySelector('img')?.src || ''; }
+      const lbTitle = document.getElementById('lbTitle');
+      if (lbTitle) lbTitle.textContent = c.dataset.lbTitle || '';
+      const lbCtr = document.getElementById('lbCounter');
+      if (lbCtr) lbCtr.textContent = `${n+1} / ${overlay._showcaseCards.length}`;
+    });
+
+    // Reset flag on close
+    const closeBtn  = document.getElementById('lbClose');
+    const backdrop  = document.getElementById('lbBackdrop');
+    [closeBtn, backdrop].forEach(el => {
+      if (el) el.addEventListener('click', () => { overlay._isShowcase = false; });
+    });
+  })();
+
 });
