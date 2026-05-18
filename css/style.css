@@ -147,6 +147,92 @@ nav { position: fixed !important; z-index: 100 !important; }
   filter: brightness(1.2);
 }
 
+/* ── NAV LOGO GLITCH EFFECT ── */
+@keyframes glitch-logo-base {
+  0%,100% { transform: translate(0,0) skewX(0deg); }
+  20%      { transform: translate(-2px,0) skewX(-1deg); }
+  21%      { transform: translate(2px,0)  skewX(1deg); }
+  22%      { transform: translate(0,0)    skewX(0deg); }
+  60%      { transform: translate(1px,-1px) skewX(0.5deg); }
+  61%      { transform: translate(-1px,1px) skewX(-0.5deg); }
+  62%      { transform: translate(0,0) skewX(0deg); }
+}
+@keyframes glitch-logo-red {
+  0%,100% { clip-path: inset(0 0 100% 0); transform: translate(0,0); opacity:0; }
+  15%     { clip-path: inset(20% 0 55% 0); transform: translate(-3px,0); opacity:0.85; }
+  17%     { clip-path: inset(55% 0 20% 0); transform: translate(3px,0);  opacity:0.85; }
+  19%     { clip-path: inset(0 0 100% 0);  transform: translate(0,0);    opacity:0; }
+  55%     { clip-path: inset(40% 0 30% 0); transform: translate(-2px,0); opacity:0.7; }
+  57%     { clip-path: inset(0 0 100% 0);  transform: translate(0,0);    opacity:0; }
+}
+@keyframes glitch-logo-cyan {
+  0%,100% { clip-path: inset(0 0 100% 0); transform: translate(0,0); opacity:0; }
+  15%     { clip-path: inset(30% 0 40% 0); transform: translate(3px,0);  opacity:0.85; }
+  17%     { clip-path: inset(60% 0 10% 0); transform: translate(-3px,0); opacity:0.85; }
+  19%     { clip-path: inset(0 0 100% 0);  transform: translate(0,0);    opacity:0; }
+  55%     { clip-path: inset(20% 0 50% 0); transform: translate(2px,0);  opacity:0.7; }
+  57%     { clip-path: inset(0 0 100% 0);  transform: translate(0,0);    opacity:0; }
+}
+@keyframes glitch-logo-scanlines {
+  0%,100%  { opacity:0; }
+  15%, 19% { opacity:1; }
+  55%, 57% { opacity:0.7; }
+}
+
+.nav-logo {
+  position: relative;
+}
+.nav-logo.glitching {
+  animation: glitch-logo-base 0.4s steps(1,end) both;
+}
+.nav-logo::before,
+.nav-logo::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  color: var(--white);
+  pointer-events: none;
+  opacity: 0;
+}
+.nav-logo::before {
+  color: #ff003c;
+  text-shadow: 2px 0 #ff003c;
+  mix-blend-mode: screen;
+}
+.nav-logo::after {
+  color: #00ffe7;
+  text-shadow: -2px 0 #00ffe7;
+  mix-blend-mode: screen;
+}
+.nav-logo.glitching::before {
+  animation: glitch-logo-red  0.4s steps(1,end) both;
+}
+.nav-logo.glitching::after {
+  animation: glitch-logo-cyan 0.4s steps(1,end) both;
+}
+
+/* Scanlines overlay on glitch */
+.nav-logo-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.45) 2px,
+    rgba(0,0,0,0.45) 4px
+  );
+  z-index: 2;
+}
+.nav-logo.glitching .nav-logo-scanlines {
+  animation: glitch-logo-scanlines 0.4s steps(1,end) both;
+}
+
 .nav-links-center {
   display: flex;
   gap: 40px;
@@ -294,24 +380,17 @@ nav { position: fixed !important; z-index: 100 !important; }
   pointer-events: none; will-change: transform, opacity;
   transform-origin: center center; opacity: 0;
 }
-.space-planet { position: absolute; border-radius: 50%; pointer-events: none; z-index: 1; }
-.space-planet-1 {
-  width: 320px; height: 320px; top: -80px; right: -60px;
-  background: radial-gradient(circle at 35% 35%, rgba(30,50,160,0.18) 0%, rgba(10,20,80,0.1) 40%, transparent 70%);
-  border: 1px solid rgba(10,40,200,0.08);
-  box-shadow: inset -20px -20px 60px rgba(5,10,40,0.5), 0 0 80px rgba(10,26,255,0.06);
-  animation: planetFloat 18s ease-in-out infinite alternate;
+/* ── BLOB HERO CANVAS ── */
+.blob-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  /* Soft blur bakes the metaball look right into the element */
+  filter: blur(0px);
 }
-.space-planet-2 {
-  width: 180px; height: 180px; bottom: 60px; left: -40px;
-  background: radial-gradient(circle at 40% 30%, rgba(60,20,140,0.14) 0%, rgba(20,10,60,0.08) 40%, transparent 70%);
-  border: 1px solid rgba(80,20,180,0.07);
-  box-shadow: inset -10px -10px 40px rgba(10,5,30,0.4), 0 0 50px rgba(80,20,180,0.05);
-  animation: planetFloat 24s ease-in-out infinite alternate-reverse;
-}
-.space-orbit { position: absolute; border-radius: 50%; pointer-events: none; z-index: 1; animation: orbitSpin linear infinite; }
-.space-orbit-1 { width: 500px; height: 500px; top: 50%; left: 50%; transform: translate(-50%,-50%); border: 1px solid rgba(10,40,200,0.05); animation-duration: 60s; }
-.space-orbit-2 { width: 700px; height: 700px; top: 50%; left: 50%; transform: translate(-50%,-50%); border: 1px solid rgba(10,40,200,0.03); animation-duration: 90s; animation-direction: reverse; }
 
 .hero-content { position: relative; z-index: 3; }
 .hero-eyebrow {
@@ -420,6 +499,7 @@ nav { position: fixed !important; z-index: 100 !important; }
 }
 .service-card::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
 .service-card::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 80% at 50% 120%, rgba(10,26,255,0.12), transparent); opacity: 0; transition: opacity 0.4s; }
+.service-card:hover { box-shadow: 0 0 0 1px rgba(80,120,255,0.22), 0 20px 50px rgba(10,26,255,0.18); }
 .service-card:hover::before { transform: scaleX(1); }
 .service-card:hover::after { opacity: 1; }
 /* No CSS hover transform — JS tilt handles all transform on this element */
@@ -437,7 +517,7 @@ nav { position: fixed !important; z-index: 100 !important; }
 .filter-btn:hover, .filter-btn.active { color: var(--white); background: var(--accent-soft); }
 
 .portfolio-grid { display: grid; grid-template-columns: repeat(12,1fr); gap: 12px; max-width: 1200px; margin: 0 auto; }
-.project-card { position: relative; overflow: hidden; background: var(--bg2); border: 1px solid var(--card-border); cursor: pointer; border-radius: 8px; }
+.project-card { position: relative; overflow: hidden; background: var(--bg2); border: 1px solid var(--card-border); cursor: pointer; border-radius: 8px; transition: box-shadow 0.4s ease; }
 .project-card:nth-child(1) { grid-column: 1/8;  grid-row: 1; min-height: 320px; }
 .project-card:nth-child(2) { grid-column: 8/13; grid-row: 1; min-height: 320px; }
 .project-card:nth-child(3) { grid-column: 1/5;  grid-row: 2; min-height: 220px; }
@@ -557,14 +637,13 @@ nav { position: fixed !important; z-index: 100 !important; }
 .portfolio-grid[data-active-filter="typography"] .project-name {
   letter-spacing: 0.14em;
 }
-.portfolio-grid[data-active-filter="ai"] .project-card {
-  box-shadow: 0 0 0 1px rgba(80,120,255,0.2), 0 24px 80px rgba(10,26,255,0.16);
-}
+
 .portfolio-grid[data-active-filter="web-design"] .project-card {
   border-top: 2px solid rgba(10,26,255,0.6);
 }
 
 .project-card::before { content: attr(data-num); position: absolute; top: 20px; right: 20px; font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.2em; color: rgba(255,255,255,0.06); z-index: 1; transition: color 0.4s; }
+.project-card:hover { box-shadow: 0 0 0 1px rgba(80,120,255,0.22), 0 20px 50px rgba(10,26,255,0.18); }
 .project-card:hover::before { color: rgba(10,26,255,0.3); }
 .project-card::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); transform: scaleY(0); transform-origin: bottom; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); z-index: 3; border-radius: 0 0 0 8px; }
 .project-card:hover::after { transform: scaleY(1); }
@@ -742,7 +821,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
 @keyframes scrollPulse { 0%,100% { opacity:0.4; transform:scaleY(1); } 50% { opacity:1; transform:scaleY(1.1); } }
 @keyframes pulsering { 0%,100% { transform:scale(1); opacity:0.5; } 50% { transform:scale(1.15); opacity:0.2; } }
-@keyframes planetFloat { 0% { transform:translateY(0px) rotate(0deg); } 100% { transform:translateY(-20px) rotate(3deg); } }
 @keyframes orbitSpin { from { transform:translate(-50%,-50%) rotate(0deg); } to { transform:translate(-50%,-50%) rotate(360deg); } }
 @keyframes twinkle { 0% { opacity:0.2; transform:scale(1); } 100% { opacity:0.8; transform:scale(1.4); } }
 @keyframes shootingStarAnim { 0% { opacity:0; transform:translate(0,0) rotate(-35deg); } 5% { opacity:1; } 100% { opacity:0; transform:translate(600px,340px) rotate(-35deg); } }
@@ -1244,6 +1322,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  box-shadow: none;
+  transition: box-shadow 0.4s ease;
 }
 .feat-card::after {
   content: '';
@@ -1256,6 +1336,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     transparent       100%);
   z-index: 1;
   transition: opacity 0.4s ease;
+}
+.feat-card:hover {
+  box-shadow: 0 0 0 1px rgba(80,120,255,0.22), 0 20px 50px rgba(10,26,255,0.18);
 }
 .feat-card:hover::after {
   opacity: 0.85;
@@ -2874,16 +2957,25 @@ body::after {
 /* ================================================================
    #5 CUSTOM SCROLLBAR
    ================================================================ */
-::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(10, 26, 255, 0.55);
+  background: rgba(10, 26, 255, 0.45);
   border-radius: 999px;
-  box-shadow: 0 0 8px rgba(10, 26, 255, 0.6);
+  box-shadow: none;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(31, 59, 255, 0.85);
-  box-shadow: 0 0 14px rgba(10, 26, 255, 0.9);
+  box-shadow: 0 0 14px rgba(10, 26, 255, 0.9), 0 0 28px rgba(10, 26, 255, 0.5);
+}
+/* Glow state — added to body while scrolling via JS */
+body.is-scrolling::-webkit-scrollbar-thumb {
+  background: rgba(10, 26, 255, 0.9);
+  box-shadow:
+    0 0 6px rgba(10, 26, 255, 0.9),
+    0 0 18px rgba(10, 26, 255, 0.7),
+    0 0 36px rgba(80, 100, 255, 0.4);
 }
 * { scrollbar-width: thin; scrollbar-color: rgba(10,26,255,0.55) transparent; }
 

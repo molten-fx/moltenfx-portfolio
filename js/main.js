@@ -520,6 +520,111 @@ document.addEventListener('mouseenter', () => {
     render();
   })();
 
+
+  /* ================================================================
+     LIQUID / BLOB HERO BACKGROUND
+     Canvas-based organic metaballs — deep blue & indigo lava motion.
+     Runs on every .page-hero-section that has a .blob-canvas inside.
+     Uses layered smooth-noise (sum of sines) — zero dependencies.
+  ================================================================ */
+  (function () {
+    if (prefersReducedMotion) return;
+
+    /* smooth noise: sum of sine waves at multiple frequencies */
+    function sn(x, y, t, seed) {
+      var v = 0;
+      var freqs = [0.8, 1.7, 3.1, 5.3];
+      var amps  = [1.0, 0.5, 0.25, 0.125];
+      for (var i = 0; i < freqs.length; i++) {
+        var f = freqs[i];
+        v += amps[i] * Math.sin(f * x * 1.3 + t * (0.31 + seed * 0.07) + seed * 2.1)
+                     * Math.cos(f * y * 1.1 + t * (0.19 + seed * 0.05) + seed * 3.7);
+      }
+      return v; // range approx -1.8..+1.8
+    }
+
+    /* blob definitions: home pos (0-1 normalised), wander, size, colours */
+    var BLOBS = [
+      { hx:0.30, hy:0.55, wr:0.22, wry:0.18, speed:0.28, size:0.52,
+        c0:'rgba(10,26,255,0.55)',  c1:'rgba(20,40,220,0.18)',  c2:'rgba(10,26,200,0)', seed:0 },
+      { hx:0.72, hy:0.32, wr:0.20, wry:0.16, speed:0.22, size:0.42,
+        c0:'rgba(80,20,210,0.48)',  c1:'rgba(60,10,180,0.15)',  c2:'rgba(40,0,160,0)',  seed:1 },
+      { hx:0.78, hy:0.78, wr:0.16, wry:0.14, speed:0.34, size:0.33,
+        c0:'rgba(30,80,255,0.44)',  c1:'rgba(10,50,220,0.14)',  c2:'rgba(5,30,180,0)',  seed:2 },
+      { hx:0.18, hy:0.22, wr:0.14, wry:0.13, speed:0.19, size:0.28,
+        c0:'rgba(0,40,200,0.38)',   c1:'rgba(5,20,180,0.12)',   c2:'rgba(0,10,150,0)',  seed:3 },
+      { hx:0.52, hy:0.60, wr:0.18, wry:0.15, speed:0.26, size:0.36,
+        c0:'rgba(100,10,200,0.32)', c1:'rgba(70,5,160,0.10)',   c2:'rgba(50,0,130,0)', seed:4 },
+    ];
+
+    function initBlob(canvas) {
+      if (canvas._blobInit) return;
+      canvas._blobInit = true;
+      var ctx = canvas.getContext('2d');
+      var W, H, t = Math.random() * 1000;
+      var mouseX = 0.5, mouseY = 0.5, targetMX = 0.5, targetMY = 0.5;
+
+      function resize() {
+        W = canvas.width  = canvas.offsetWidth  || canvas.parentElement.offsetWidth;
+        H = canvas.height = canvas.offsetHeight || canvas.parentElement.offsetHeight;
+      }
+      resize();
+      if (typeof ResizeObserver !== 'undefined') { new ResizeObserver(resize).observe(canvas); }
+      else { window.addEventListener('resize', resize); }
+
+      document.addEventListener('mousemove', function (e) {
+        var rect = canvas.getBoundingClientRect();
+        if (rect.bottom < -300 || rect.top > window.innerHeight + 300) return;
+        targetMX = e.clientX / window.innerWidth;
+        targetMY = e.clientY / window.innerHeight;
+      });
+
+      function render() {
+        requestAnimationFrame(render);
+        t += 0.008;
+        mouseX += (targetMX - mouseX) * 0.04;
+        mouseY += (targetMY - mouseY) * 0.04;
+
+        ctx.clearRect(0, 0, W, H);
+        var minDim = Math.min(W, H);
+        var mxo = (mouseX - 0.5) * 0.06;
+        var myo = (mouseY - 0.5) * 0.04;
+
+        BLOBS.forEach(function (b) {
+          var nx = sn(b.hx, b.hy, t * b.speed,        b.seed);
+          var ny = sn(b.hy, b.hx, t * b.speed + 10,   b.seed + 0.5);
+          var bx = (b.hx + nx * b.wr  + mxo * (1 - b.hx)) * W;
+          var by = (b.hy + ny * b.wry + myo * (1 - b.hy)) * H;
+          var pulse = 1 + 0.12 * Math.sin(t * b.speed * 2.3 + b.seed * 1.9);
+          var r = b.size * minDim * 0.55 * pulse;
+          var g = ctx.createRadialGradient(bx, by, 0, bx, by, r);
+          g.addColorStop(0,    b.c0);
+          g.addColorStop(0.45, b.c1);
+          g.addColorStop(1,    b.c2);
+          ctx.beginPath();
+          ctx.arc(bx, by, r, 0, Math.PI * 2);
+          ctx.fillStyle = g;
+          ctx.fill();
+        });
+
+        /* dark vignette — keeps text readable */
+        var vg = ctx.createRadialGradient(W*.5,H*.5,0, W*.5,H*.5, Math.max(W,H)*.75);
+        vg.addColorStop(0,   'rgba(3,4,12,0)');
+        vg.addColorStop(0.6, 'rgba(3,4,12,0.15)');
+        vg.addColorStop(1,   'rgba(3,4,12,0.55)');
+        ctx.fillStyle = vg;
+        ctx.fillRect(0, 0, W, H);
+      }
+      render();
+    }
+
+    function initAll() {
+      document.querySelectorAll('.blob-canvas').forEach(initBlob);
+    }
+    initAll();
+    setTimeout(initAll, 400);
+  })();
+
   /* ── FLOATING CARDS (zoom-through) ── */
   (function () {
     if (prefersReducedMotion) return;
@@ -1088,5 +1193,46 @@ document.addEventListener('mouseenter', () => {
   })();
 
   /* #10 — Horizontal scroll removed: featured section uses normal grid layout */
+
+  /* ── NAV LOGO GLITCH ── */
+  (function () {
+    if (prefersReducedMotion) return;
+    var logos = document.querySelectorAll('.nav-logo');
+    logos.forEach(function (logo) {
+      logo.setAttribute('data-text', logo.textContent);
+      var sl = document.createElement('span');
+      sl.className = 'nav-logo-scanlines';
+      logo.appendChild(sl);
+    });
+
+    function triggerGlitch() {
+      logos.forEach(function (logo) {
+        if (logo.classList.contains('glitching')) return;
+        logo.classList.add('glitching');
+        setTimeout(function () { logo.classList.remove('glitching'); }, 420);
+      });
+      // Next glitch: random 2.5s – 7s
+      setTimeout(triggerGlitch, 2500 + Math.random() * 4500);
+    }
+
+    // Warm-up delay before first glitch
+    setTimeout(triggerGlitch, 1500 + Math.random() * 2000);
+  })();
+
+  /* ================================================================
+     #11 — SCROLLBAR GLOW
+     Adds `is-scrolling` to body while scrolling so CSS can light up
+     the scrollbar thumb with a blue glow
+  ================================================================ */
+  (function () {
+    var scrollTimer = null;
+    window.addEventListener('scroll', function () {
+      document.body.classList.add('is-scrolling');
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function () {
+        document.body.classList.remove('is-scrolling');
+      }, 150);
+    }, { passive: true });
+  })();
 
 });
