@@ -413,13 +413,16 @@ nav { position: fixed !important; z-index: 100 !important; }
 .services-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; max-width: 1200px; margin: 0 auto; background: var(--card-border); border: 1px solid var(--card-border); }
 .service-card {
   background: var(--bg); padding: 48px 36px;
-  position: relative; overflow: hidden; transition: all 0.4s; cursor: default;
+  position: relative; overflow: hidden;
+  /* Only transition non-transform props — JS owns transform for tilt */
+  transition: border-color 0.4s, box-shadow 0.4s, background 0.4s;
+  cursor: default;
 }
 .service-card::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
 .service-card::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 80% at 50% 120%, rgba(10,26,255,0.12), transparent); opacity: 0; transition: opacity 0.4s; }
 .service-card:hover::before { transform: scaleX(1); }
 .service-card:hover::after { opacity: 1; }
-.service-card:hover { transform: translateY(-4px); }
+/* No CSS hover transform — JS tilt handles all transform on this element */
 .service-num { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.25em; color: var(--accent2); margin-bottom: 32px; display: block; }
 .service-icon { width: 44px; height: 44px; margin-bottom: 28px; position: relative; z-index: 1; }
 .service-icon svg { width: 100%; height: 100%; stroke: var(--accent2); fill: none; stroke-width: 1.2; }
@@ -970,12 +973,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
-  transition: border-color 0.3s, transform 0.3s;
+  /* Only transition non-transform props — JS tilt owns transform */
+  transition: border-color 0.3s;
   cursor: default;
 }
 .skill-card:hover {
   border-color: rgba(10,26,255,0.5);
-  transform: translateY(-4px);
+  /* No CSS hover transform — JS tilt handles it */
 }
 .skill-icon svg {
   width: 40px;
@@ -1709,11 +1713,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   border: 1px solid var(--card-border);
   border-radius: 8px;
   padding: 16px 20px;
-  transition: border-color 0.3s, transform 0.3s;
+  /* Only transition non-transform props — JS tilt owns transform */
+  transition: border-color 0.3s;
 }
 .achievement-item:hover {
   border-color: rgba(10,26,255,0.4);
-  transform: translateX(4px);
+  /* No CSS hover transform — JS tilt handles it */
 }
 .achievement-icon {
   font-size: 14px;
@@ -2822,4 +2827,127 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .showcase-biz-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .showcase-heading { font-size: clamp(38px, 10vw, 60px); }
   .showcase-bg-text { font-size: 120px; opacity: 0.015; }
+}
+
+/* ================================================================
+   #1 MAGNETIC — preserve stacking for magnetic elements
+   ================================================================ */
+.btn-primary-molten,
+.btn-secondary-molten,
+.nav-cta,
+.feat-link,
+.contact-cta-btn,
+.mbn-item {
+  will-change: transform;
+}
+
+
+
+/* ================================================================
+   #4 FILM GRAIN / NOISE OVERLAY
+   ================================================================ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  pointer-events: none;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  animation: grainShift 0.12s steps(1) infinite;
+}
+@keyframes grainShift {
+  0%   { background-position:   0px   0px; }
+  10%  { background-position: -80px -40px; }
+  20%  { background-position:  60px  30px; }
+  30%  { background-position: -20px  80px; }
+  40%  { background-position:  40px -60px; }
+  50%  { background-position: -60px  20px; }
+  60%  { background-position:  80px  60px; }
+  70%  { background-position: -40px -80px; }
+  80%  { background-position:  20px  40px; }
+  90%  { background-position: -80px  60px; }
+  100% { background-position:   0px   0px; }
+}
+
+/* ================================================================
+   #5 CUSTOM SCROLLBAR
+   ================================================================ */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(10, 26, 255, 0.55);
+  border-radius: 999px;
+  box-shadow: 0 0 8px rgba(10, 26, 255, 0.6);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(31, 59, 255, 0.85);
+  box-shadow: 0 0 14px rgba(10, 26, 255, 0.9);
+}
+* { scrollbar-width: thin; scrollbar-color: rgba(10,26,255,0.55) transparent; }
+
+/* ================================================================
+   #7 AVAILABILITY BADGE
+   ================================================================ */
+.availability-badge {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  z-index: 9990;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(5, 7, 18, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 999px;
+  padding: 7px 14px 7px 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  animation: badgeFadeIn 1s 1.5s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes badgeFadeIn {
+  from { opacity:0; transform: translateY(20px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+.avail-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22dd66;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px #22dd66, 0 0 12px rgba(34,221,102,0.4);
+  animation: availPulse 2s ease-in-out infinite;
+}
+@keyframes availPulse {
+  0%,100% { box-shadow: 0 0 6px #22dd66, 0 0 12px rgba(34,221,102,0.4); }
+  50%      { box-shadow: 0 0 10px #22dd66, 0 0 22px rgba(34,221,102,0.7); }
+}
+.avail-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(200,220,200,0.85);
+  white-space: nowrap;
+}
+@media (max-width: 768px) {
+  .availability-badge { bottom: 90px; left: 16px; padding: 6px 12px 6px 9px; }
+  .avail-text { font-size: 8px; }
+}
+
+/* ================================================================
+   #9 SKILL COUNTER
+   ================================================================ */
+.skill-bar { position: relative; }
+.skill-pct {
+  position: absolute;
+  right: 0;
+  top: -18px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--accent2);
+  pointer-events: none;
 }

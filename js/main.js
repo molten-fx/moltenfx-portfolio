@@ -637,6 +637,8 @@ document.addEventListener('mouseenter', () => {
       const cat = card.dataset.category || '';
       if (cat === 'graphics-design')  return 'Graphic Design';
       if (cat === 'illustration')     return 'Illustration';
+      if (cat === 'ai')               return 'AI';
+      if (cat === 'web-design')       return 'Web Design';
       return cat;
     }
 
@@ -837,5 +839,254 @@ document.addEventListener('mouseenter', () => {
       if (el) el.addEventListener('click', () => { overlay._isShowcase = false; });
     });
   })();
+
+  /* ================================================================
+     #1 — MAGNETIC CURSOR EFFECT
+     Buttons, cards, nav links pull toward the cursor on hover
+  ================================================================ */
+  (function () {
+    const MAGNETIC_SELECTORS = [
+      '.btn-primary-molten',
+      '.btn-secondary-molten',
+      '.nav-cta',
+      '.feat-link',
+      '.project-link',
+      '.contact-cta-btn',
+      '.cv-open-btn',
+      '.cv-download-btn',
+      '.cv-btn',
+      '.featured-view-all',
+      '.mbn-item',
+      '.channel-card',
+      '.footer-social a',
+    ].join(',');
+
+    const STRENGTH = 0.38;   // how far element moves (0–1)
+    const EASE     = 0.12;   // lerp speed
+
+    const magnetics = [];
+
+    function initMagnetic(el) {
+      let tx = 0, ty = 0, cx = 0, cy = 0;
+      let raf = null;
+
+      function onMove(e) {
+        const rect = el.getBoundingClientRect();
+        const cx0  = rect.left + rect.width  / 2;
+        const cy0  = rect.top  + rect.height / 2;
+        tx = (e.clientX - cx0) * STRENGTH;
+        ty = (e.clientY - cy0) * STRENGTH;
+      }
+
+      function onLeave() {
+        tx = 0; ty = 0;
+      }
+
+      function animate() {
+        cx = lerp(cx, tx, EASE);
+        cy = lerp(cy, ty, EASE);
+        el.style.transform = `translate(${cx.toFixed(2)}px, ${cy.toFixed(2)}px)`;
+        if (Math.abs(cx - tx) > 0.05 || Math.abs(cy - ty) > 0.05) {
+          raf = requestAnimationFrame(animate);
+        } else {
+          cx = tx; cy = ty;
+          el.style.transform = `translate(${cx.toFixed(2)}px, ${cy.toFixed(2)}px)`;
+          raf = null;
+        }
+      }
+
+      function startAnim() {
+        if (!raf) raf = requestAnimationFrame(animate);
+      }
+
+      el.addEventListener('mousemove',  e => { onMove(e);  startAnim(); });
+      el.addEventListener('mouseleave', () => { onLeave(); startAnim(); });
+      magnetics.push(el);
+    }
+
+    // Init on load + re-init on tab switch (new cards may appear)
+    function initAll() {
+      document.querySelectorAll(MAGNETIC_SELECTORS).forEach(el => {
+        if (!el._magnetic) {
+          el._magnetic = true;
+          // Preserve any existing transition for non-transform props
+          const cur = el.style.transition;
+          el.style.transition = cur
+            ? cur + ', transform 0.1s ease'
+            : 'transform 0.1s ease';
+          initMagnetic(el);
+        }
+      });
+    }
+
+    // Run after DOM ready
+    initAll();
+    // Also re-run when filter buttons are clicked (new cards shown)
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => setTimeout(initAll, 50));
+    });
+  })();
+
+
+
+
+
+  /* ================================================================
+     #6 — 3D CARD TILT ON HOVER
+     Direct cursor-tracking — no lerp lag while hovering,
+     smooth ease-back only on mouse leave
+  ================================================================ */
+  (function () {
+    if (prefersReducedMotion) return;
+
+    var TILT_MAX    = 12;    // max degrees
+    var LEAVE_EASE  = 0.18;  // ease speed when returning to flat (higher = faster snap-back)
+    var SCALE       = 1.03;
+
+    function initTilt(el) {
+      if (el._tilt) return;
+      el._tilt = true;
+
+      var cx = 0, cy = 0, sc = 1;
+      var leaving = false, raf = null;
+      var enterTimer = null;  // debounce rapid enter/leave at corners
+
+      el.style.transformStyle = 'preserve-3d';
+      el.style.willChange = 'transform';
+
+      // Clamp helper — prevents extreme corner values that cause jumps
+      function clamp(v, min, max) { return v < min ? min : v > max ? max : v; }
+
+      function getTilt(e, rect) {
+        // Scale-expansion gap: when the card scales up by (SCALE-1),
+        // each edge grows by half that fraction of its dimension.
+        // We add 8px extra buffer to absorb subpixel rounding.
+        // This is proportional, so large cards get a larger safe-zone than small ones.
+        var padX = rect.width  * (SCALE - 1) / 2 + 8;
+        var padY = rect.height * (SCALE - 1) / 2 + 8;
+        var nx = clamp((e.clientX - rect.left - padX) / (rect.width  - padX * 2), 0, 1);
+        var ny = clamp((e.clientY - rect.top  - padY) / (rect.height - padY * 2), 0, 1);
+        return {
+          rx:  (nx - 0.5) * TILT_MAX * 2,
+          ry: -(ny - 0.5) * TILT_MAX * 2
+        };
+      }
+
+      function applyTransform(rx, ry, scale) {
+        el.style.transform =
+          'perspective(800px) rotateX(' + ry.toFixed(3) + 'deg) rotateY(' + rx.toFixed(3) + 'deg) scale3d(' + scale.toFixed(4) + ',' + scale.toFixed(4) + ',1)';
+      }
+
+      // While leaving: ease cx/cy/sc back to 0/0/1
+      function leaveLoop() {
+        cx += (0 - cx) * LEAVE_EASE;
+        cy += (0 - cy) * LEAVE_EASE;
+        sc += (1 - sc) * LEAVE_EASE;
+        applyTransform(cx, cy, sc);
+        if (Math.abs(cx) > 0.01 || Math.abs(cy) > 0.01 || Math.abs(sc - 1) > 0.001) {
+          raf = requestAnimationFrame(leaveLoop);
+        } else {
+          cx = 0; cy = 0; sc = 1;
+          applyTransform(0, 0, 1);
+          el.style.transition = ''; // restore any CSS transitions
+          raf = null;
+        }
+      }
+
+      el.addEventListener('mouseenter', function (e) {
+        // Cancel any pending leave that was debounced
+        if (enterTimer) { clearTimeout(enterTimer); enterTimer = null; }
+        leaving = false;
+        if (raf) { cancelAnimationFrame(raf); raf = null; }
+        // Kill any CSS transition on transform so JS updates are instant
+        el.style.transition = 'none';
+        sc = SCALE;
+        var rect = el.getBoundingClientRect();
+        var t = getTilt(e, rect);
+        cx = t.rx; cy = t.ry;
+        applyTransform(cx, cy, sc);
+      });
+
+      el.addEventListener('mousemove', function (e) {
+        if (leaving) return;
+        var rect = el.getBoundingClientRect();
+        var t = getTilt(e, rect);
+        cx = t.rx; cy = t.ry;
+        applyTransform(cx, cy, SCALE);
+      });
+
+      el.addEventListener('mouseleave', function () {
+        // Debounce delay scales with card area — large cards repaint slower,
+        // so they need a bigger window to absorb corner bounce re-entries.
+        // Clamped between 30ms (small cards) and 80ms (huge hero cards).
+        var rect = el.getBoundingClientRect();
+        var area = rect.width * rect.height;
+        var delay = Math.min(Math.max(Math.round(area / 8000), 30), 80);
+        enterTimer = setTimeout(function () {
+          enterTimer = null;
+          leaving = true;
+          if (raf) cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(leaveLoop);
+        }, delay);
+      });
+    }
+
+    function initAll() {
+      document.querySelectorAll('.project-card, .feat-card, .service-card, .skill-card, .achievement-item').forEach(initTilt);
+    }
+
+    initAll();
+    document.querySelectorAll('.filter-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { setTimeout(initAll, 60); });
+    });
+  })();
+
+  /* #8 — Lenis removed: using native browser scrolling */
+
+  /* ================================================================
+     #9 — SKILL BAR COUNTER ANIMATION
+     Numbers count up as skill bars fill
+  ================================================================ */
+  (function () {
+    var cards = document.querySelectorAll('.skill-card');
+    if (!cards.length) return;
+
+    // Inject counter span into each skill bar
+    cards.forEach(function (card) {
+      var bar = card.querySelector('.skill-bar-fill');
+      if (!bar || card.querySelector('.skill-pct')) return;
+      var pct = (bar.style.getPropertyValue('--pct') || '0%').replace('%','');
+      var span = document.createElement('span');
+      span.className = 'skill-pct';
+      span.textContent = '0%';
+      span.setAttribute('data-target', pct);
+      card.querySelector('.skill-bar').appendChild(span);
+    });
+
+    // Animate counter on scroll in
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var span = e.target.querySelector('.skill-pct');
+        if (!span || span._counted) return;
+        span._counted = true;
+        var target = parseInt(span.getAttribute('data-target'), 10);
+        var start  = 0, duration = 1200, startTime = null;
+        function step(ts) {
+          if (!startTime) startTime = ts;
+          var progress = Math.min((ts - startTime) / duration, 1);
+          var ease = 1 - Math.pow(1 - progress, 3);
+          span.textContent = Math.round(ease * target) + '%';
+          if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+        obs.unobserve(e.target);
+      });
+    }, { threshold: 0.4 });
+
+    cards.forEach(function (c) { obs.observe(c); });
+  })();
+
+  /* #10 — Horizontal scroll removed: featured section uses normal grid layout */
 
 });
