@@ -13,7 +13,7 @@
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel+Decorative:wght@700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
@@ -29,6 +29,10 @@
 <!-- Custom cursor -->
 <div id="cursor-dot"></div>
 <div id="cursor-square"></div>
+<div class="availability-badge" id="availBadge">
+  <span class="avail-dot"></span>
+  <span class="avail-text">Available for work</span>
+</div>
 
 <!-- ---- NAVBAR ---- -->
 <nav class="molten-nav">
@@ -60,10 +64,13 @@
 
 <!-- ---- HERO ---- -->
 <section class="hero-section" id="hero">
-  <canvas id="heroCanvas"></canvas>
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <canvas class="blob-canvas" id="blobCanvas"></canvas>
+  <!-- WebGL fluid simulation — behind everything -->
+  <canvas id="fluidCanvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block;opacity:0.72;mix-blend-mode:screen;pointer-events:none;"></canvas>
+  <!-- Original canvas kept for existing JS particles/grid — rendered above fluid at low opacity -->
+  <canvas id="heroCanvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;opacity:0.28;pointer-events:none;"></canvas>
+  <div class="hero-bg" style="z-index:2;"></div>
+  <div class="hero-grid" style="z-index:3;"></div>
+  <canvas class="blob-canvas" id="blobCanvas" style="z-index:4;"></canvas>
 
   <!-- Space decorations -->
   
@@ -71,10 +78,13 @@
   
   
 
+<!-- Fluid canvas receives pointer events for fluid sim -->
+  <div id="fluidInteract" style="position:absolute;inset:0;width:100%;height:100%;z-index:5;"></div>
+
   <!-- Floating Cards -->
   <div class="float-cards" id="floatCards"></div>
 
-  <div class="hero-content text-center">
+  <div class="hero-content text-center" style="position:relative;z-index:10;">
     <p class="hero-eyebrow">Creative Editor &amp; Motion Designer</p>
     <h1 class="hero-title">I Create<br>Visual <em>Stories</em><br>That Hit Different</h1>
     <p class="hero-sub">
@@ -321,6 +331,28 @@
 
 <!-- Custom JS -->
 <script src="js/main.js"></script>
+<!-- WebGL Fluid Simulation -->
+<script src="js/fluid.js"></script>
+<script>
+  // Bridge: fluid canvas tracks mouse from the whole hero section
+  // so interaction works even over text content
+  (function() {
+    const fluidCanvas = document.getElementById('fluidCanvas');
+    const hero = document.getElementById('hero');
+    if (!fluidCanvas || !hero) return;
+    function relay(e) {
+      fluidCanvas.dispatchEvent(new MouseEvent(e.type, e));
+    }
+    hero.addEventListener('mousemove', relay, { passive: true });
+    hero.addEventListener('mouseleave', relay, { passive: true });
+    hero.addEventListener('touchstart', function(e) {
+      fluidCanvas.dispatchEvent(new TouchEvent(e.type, e));
+    }, { passive: false });
+    hero.addEventListener('touchmove', function(e) {
+      fluidCanvas.dispatchEvent(new TouchEvent(e.type, e));
+    }, { passive: false });
+  })();
+</script>
 
 
 <nav class="mobile-bottom-nav" aria-label="Mobile navigation">

@@ -1203,20 +1203,42 @@ document.addEventListener('mouseenter', () => {
       var sl = document.createElement('span');
       sl.className = 'nav-logo-scanlines';
       logo.appendChild(sl);
+      var tear = document.createElement('span');
+      tear.className = 'nav-logo-tear';
+      logo.appendChild(tear);
     });
 
-    function triggerGlitch() {
+    var GLITCH_DURATION = 680; // ms — matches CSS animation length
+
+    function fireGlitch() {
       logos.forEach(function (logo) {
         if (logo.classList.contains('glitching')) return;
         logo.classList.add('glitching');
-        setTimeout(function () { logo.classList.remove('glitching'); }, 420);
+        setTimeout(function () { logo.classList.remove('glitching'); }, GLITCH_DURATION);
       });
-      // Next glitch: random 2.5s – 7s
-      setTimeout(triggerGlitch, 2500 + Math.random() * 4500);
     }
 
-    // Warm-up delay before first glitch
-    setTimeout(triggerGlitch, 1500 + Math.random() * 2000);
+    function triggerGlitch() {
+      fireGlitch();
+
+      // 45% chance of a rapid double-burst (makes it feel erratic/alive)
+      if (Math.random() < 0.45) {
+        setTimeout(function () { fireGlitch(); }, GLITCH_DURATION + 80 + Math.random() * 120);
+      }
+
+      // Next glitch: random 1.8s – 5s (tighter range = more frequent)
+      setTimeout(triggerGlitch, 1800 + Math.random() * 3200);
+    }
+
+    // First glitch fires quickly so visitors notice it right away
+    setTimeout(triggerGlitch, 800 + Math.random() * 800);
+
+    // Also trigger on logo hover for instant feedback
+    logos.forEach(function (logo) {
+      logo.addEventListener('mouseenter', function () {
+        if (!logo.classList.contains('glitching')) fireGlitch();
+      });
+    });
   })();
 
   /* ================================================================
