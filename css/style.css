@@ -2518,11 +2518,22 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 .contact-cta-only .hero-bg,
 .contact-cta-only .hero-grid {
   position: absolute;
   inset: 0;
+  pointer-events: none;
+}
+/* Blob canvas fills the section, not the viewport */
+.contact-cta-only .blob-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
   pointer-events: none;
 }
 .contact-cta-only .space-planet,
