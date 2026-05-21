@@ -3161,3 +3161,13 @@ body.is-scrolling::-webkit-scrollbar-thumb {
 @media (prefers-reduced-motion: reduce) {
   #fluidCanvas { display: none !important; }
 }
+
+/* ================================================================
+   MOBILE — hide WebGL fluid simulation
+   ================================================================ */
+@media (max-width: 768px) {
+  .fluid-canvas-el {
+    display: none !important;
+    pointer-events: none !important;
+  }
+}

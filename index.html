@@ -17,6 +17,7 @@
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 </head>
 <body>
 
@@ -65,7 +66,7 @@
 <!-- ---- HERO ---- -->
 <section class="hero-section" id="hero">
   <!-- WebGL fluid simulation — behind everything -->
-  <canvas id="fluidCanvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block;opacity:0.72;mix-blend-mode:screen;pointer-events:none;"></canvas>
+  <canvas id="fluidCanvas" class="fluid-canvas-el" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block;opacity:0.72;mix-blend-mode:screen;pointer-events:none;"></canvas>
   <!-- Original canvas kept for existing JS particles/grid — rendered above fluid at low opacity -->
   <canvas id="heroCanvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;opacity:0.28;pointer-events:none;"></canvas>
   <div class="hero-bg" style="z-index:2;"></div>
@@ -79,7 +80,7 @@
   
 
 <!-- Fluid canvas receives pointer events for fluid sim -->
-  <div id="fluidInteract" style="position:absolute;inset:0;width:100%;height:100%;z-index:5;"></div>
+  <div id="fluidInteract" class="fluid-canvas-el" style="position:absolute;inset:0;width:100%;height:100%;z-index:5;"></div>
 
   <!-- Floating Cards -->
   <div class="float-cards" id="floatCards"></div>
@@ -332,26 +333,35 @@
 <!-- Custom JS -->
 <script src="js/main.js"></script>
 <!-- WebGL Fluid Simulation -->
-<script src="js/fluid.js"></script>
 <script>
-  // Bridge: fluid canvas tracks mouse from the whole hero section
-  // so interaction works even over text content
-  (function() {
-    const fluidCanvas = document.getElementById('fluidCanvas');
-    const hero = document.getElementById('hero');
-    if (!fluidCanvas || !hero) return;
-    function relay(e) {
-      fluidCanvas.dispatchEvent(new MouseEvent(e.type, e));
-    }
-    hero.addEventListener('mousemove', relay, { passive: true });
-    hero.addEventListener('mouseleave', relay, { passive: true });
-    hero.addEventListener('touchstart', function(e) {
-      fluidCanvas.dispatchEvent(new TouchEvent(e.type, e));
-    }, { passive: false });
-    hero.addEventListener('touchmove', function(e) {
-      fluidCanvas.dispatchEvent(new TouchEvent(e.type, e));
-    }, { passive: false });
-  })();
+  // Load fluid simulation only on non-mobile devices
+  if (window.innerWidth > 768) {
+    var fluidScript = document.createElement('script');
+    fluidScript.src = 'js/fluid.js';
+    fluidScript.onload = function() {
+      // Bridge: fluid canvas tracks mouse from the whole hero section
+      // Throttled to one event per RAF frame to reduce input pressure
+      (function() {
+        var fluidCanvas = document.getElementById('fluidCanvas');
+        var hero = document.getElementById('hero');
+        if (!fluidCanvas || !hero) return;
+        var pending = null;
+        function relay(e) {
+          if (pending) return;
+          pending = requestAnimationFrame(function() {
+            fluidCanvas.dispatchEvent(new MouseEvent(e.type, e));
+            pending = null;
+          });
+        }
+        function relayLeave(e) {
+          fluidCanvas.dispatchEvent(new MouseEvent(e.type, e));
+        }
+        hero.addEventListener('mousemove', relay, { passive: true });
+        hero.addEventListener('mouseleave', relayLeave, { passive: true });
+      })();
+    };
+    document.body.appendChild(fluidScript);
+  }
 </script>
 
 
