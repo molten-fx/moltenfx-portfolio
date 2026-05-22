@@ -887,6 +887,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .sa-d1 { transition-delay: 0.05s; } .sa-d2 { transition-delay: 0.12s; }
 .sa-d3 { transition-delay: 0.19s; } .sa-d4 { transition-delay: 0.26s; }
 .sa-d5 { transition-delay: 0.33s; } .sa-d6 { transition-delay: 0.40s; }
+@media (max-width: 768px), (hover: none), (pointer: coarse) {
+  .sa-up    { transform: translateY(48px) scale(0.97) !important; }
+  .sa-down  { transform: translateY(-40px) scale(0.97) !important; }
+  .sa-left  { transform: translateX(60px) scale(0.97) !important; }
+  .sa-right { transform: translateX(-60px) scale(0.97) !important; }
+  .sa-pop   { transform: scale(0.82) !important; }
+  .sa.in    { opacity: 1; transform: translateY(0) translateX(0) scale(1) !important; }
+  .sa.out-up   { opacity: 0; transform: translateY(-36px) scale(0.97) !important; }
+  .sa.out-down { opacity: 0; transform: translateY(36px) scale(0.97) !important; }
+  .sa.out-pop  { opacity: 0; transform: scale(1.06) !important; }
+}
 .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
