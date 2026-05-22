@@ -464,32 +464,43 @@ nav { position: fixed !important; z-index: 100 !important; }
   font-size: 11px; letter-spacing: 0.3em;
   text-transform: uppercase; color: var(--accent2);
   margin-bottom: 28px;
-  opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+  opacity: 0; animation: fadeUp 0.8s ease 0.1s forwards;
+  animation-play-state: paused;
 }
 .hero-title {
   font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(64px, 10vw, 130px);
   line-height: 0.92; letter-spacing: 0.02em; color: var(--white);
   margin-bottom: 32px;
-  opacity: 0; animation: fadeUp 0.9s ease 0.35s forwards;
+  opacity: 0; animation: fadeUp 0.9s ease 0.25s forwards;
+  animation-play-state: paused;
 }
 .hero-title em { font-style: normal; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.25); }
 .hero-sub {
   font-size: 14px; letter-spacing: 0.22em;
   text-transform: uppercase; color: var(--grey);
   margin-bottom: 56px;
-  opacity: 0; animation: fadeUp 0.9s ease 0.5s forwards;
+  opacity: 0; animation: fadeUp 0.9s ease 0.4s forwards;
+  animation-play-state: paused;
 }
 .hero-sub span { color: var(--grey-light); }
 .hero-btns {
   display: flex; gap: 16px; justify-content: center;
-  opacity: 0; animation: fadeUp 0.9s ease 0.65s forwards;
+  opacity: 0; animation: fadeUp 0.9s ease 0.55s forwards;
+  animation-play-state: paused;
 }
 .hero-scroll {
   position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
   display: flex; flex-direction: column; align-items: center; gap: 8px;
-  opacity: 0; animation: fadeUp 0.9s ease 1s forwards; z-index: 3;
+  opacity: 0; animation: fadeUp 0.9s ease 0.85s forwards;
+  animation-play-state: paused; z-index: 3;
 }
+/* Hero plays once loader is done */
+body.hero-ready .hero-eyebrow,
+body.hero-ready .hero-title,
+body.hero-ready .hero-sub,
+body.hero-ready .hero-btns,
+body.hero-ready .hero-scroll { animation-play-state: running; }
 .hero-scroll span { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--grey); }
 .scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollPulse 2s ease-in-out infinite; }
 
