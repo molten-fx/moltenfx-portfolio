@@ -5,6 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', function () {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobileInteraction = window.matchMedia('(hover: none), (pointer: coarse)').matches || window.innerWidth <= 768;
 
   /* ── NAV HIDE / SHOW ON SCROLL ── */
   (function () {
@@ -950,6 +951,8 @@ document.addEventListener('mouseenter', () => {
      Buttons, cards, nav links pull toward the cursor on hover
   ================================================================ */
   (function () {
+    if (isMobileInteraction) return;
+
     const MAGNETIC_SELECTORS = [
       '.btn-primary-molten',
       '.btn-secondary-molten',
@@ -1042,7 +1045,7 @@ document.addEventListener('mouseenter', () => {
      smooth ease-back only on mouse leave
   ================================================================ */
   (function () {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || isMobileInteraction) return;
 
     var TILT_MAX    = 12;    // max degrees
     var LEAVE_EASE  = 0.18;  // ease speed when returning to flat (higher = faster snap-back)

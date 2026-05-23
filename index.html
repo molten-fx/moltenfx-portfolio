@@ -17,9 +17,573 @@
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- ── MOLTEN LOADER STYLES ── -->
+  <style>
+    /* ── Lock scroll while loading ── */
+    body.is-loading {
+      overflow: hidden;
+    }
+
+    /* ── Loader backdrop ── */
+    #molten-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #05070D;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      /* Exit animation */
+      transition: opacity 0.7s cubic-bezier(0.76, 0, 0.24, 1),
+                  clip-path 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    #molten-loader.loader-exit {
+      opacity: 0;
+      clip-path: inset(0 0 100% 0);
+      pointer-events: none;
+    }
+    #molten-loader.loader-hidden {
+      display: none;
+    }
+
+    /* ── Grain canvas ── */
+    #loaderGrain {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      opacity: 0.035;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Scanlines ── */
+    .loader-scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.018) 2px,
+        rgba(255,255,255,0.018) 4px
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* ── HUD Corner brackets ── */
+    .loader-corner {
+      position: absolute;
+      width: 36px; height: 36px;
+      z-index: 5;
+      opacity: 0;
+      animation: loaderFadeIn 0.6s ease forwards 0.3s;
+    }
+    .loader-corner--tl { top: 28px; left: 28px; border-top: 1.5px solid rgba(10,26,255,0.7); border-left: 1.5px solid rgba(10,26,255,0.7); }
+    .loader-corner--tr { top: 28px; right: 28px; border-top: 1.5px solid rgba(10,26,255,0.7); border-right: 1.5px solid rgba(10,26,255,0.7); }
+    .loader-corner--bl { bottom: 28px; left: 28px; border-bottom: 1.5px solid rgba(10,26,255,0.7); border-left: 1.5px solid rgba(10,26,255,0.7); }
+    .loader-corner--br { bottom: 28px; right: 28px; border-bottom: 1.5px solid rgba(10,26,255,0.7); border-right: 1.5px solid rgba(10,26,255,0.7); }
+
+    /* ── Side HUD readouts ── */
+    .loader-hud {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 5;
+      opacity: 0;
+      animation: loaderFadeIn 0.6s ease forwards 0.5s;
+    }
+    .loader-hud--left  { left: 32px; align-items: flex-start; }
+    .loader-hud--right { right: 32px; align-items: flex-end; }
+    .loader-hud span {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: rgba(10,26,255,0.55);
+      text-transform: uppercase;
+    }
+    @media (max-width: 600px) {
+      .loader-hud { display: none; }
+      .loader-corner { width: 22px; height: 22px; top: 16px; bottom: 16px; left: 16px; right: 16px; }
+      .loader-corner--tl { top: 16px; left: 16px; }
+      .loader-corner--tr { top: 16px; right: 16px; }
+      .loader-corner--bl { bottom: 16px; left: 16px; }
+      .loader-corner--br { bottom: 16px; right: 16px; }
+    }
+
+    /* ── Center group ── */
+    .loader-center {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    /* ── Ambient glow orb ── */
+    .loader-orb {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(10,26,255,0.22) 0%, rgba(10,26,255,0.06) 45%, transparent 70%);
+      filter: blur(40px);
+      animation: loaderOrbPulse 3s ease-in-out infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+    @keyframes loaderOrbPulse {
+      0%, 100% { transform: translate(-50%,-50%) scale(1); opacity: 0.8; }
+      50%       { transform: translate(-50%,-50%) scale(1.12); opacity: 1; }
+    }
+
+    /* ── Logo wrapper (shake target) ── */
+    .loader-logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* ── Main wordmark ── */
+    .loader-logo {
+      position: relative;
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(32px, 6vw, 64px);
+      letter-spacing: 0.08em;
+      color: #F0F2FF;
+      line-height: 1;
+      opacity: 0;
+      animation: loaderLogoReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s;
+    }
+    @keyframes loaderLogoReveal {
+      from { opacity: 0; transform: translateY(20px) skewX(-4deg); filter: blur(8px); }
+      to   { opacity: 1; transform: translateY(0) skewX(0deg); filter: blur(0px); }
+    }
+
+    /* ── Ghost / glitch layers ── */
+    .loader-logo-ghost {
+      position: absolute;
+      inset: 0;
+      font-family: 'Cinzel Decorative', serif;
+      font-size: inherit;
+      letter-spacing: inherit;
+      line-height: inherit;
+      display: block;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .loader-logo-ghost--r {
+      color: #ff2244;
+      mix-blend-mode: screen;
+      clip-path: inset(0 0 60% 0);
+      opacity: 0;
+    }
+    .loader-logo-ghost--g {
+      color: #0AFFEF;
+      mix-blend-mode: screen;
+      clip-path: inset(40% 0 0 0);
+      opacity: 0;
+    }
+
+    /* ── Glitch animation on logo ── */
+    .loader-logo.glitching .loader-logo-ghost--r {
+      animation: glitchR 0.22s steps(2) forwards;
+    }
+    .loader-logo.glitching .loader-logo-ghost--g {
+      animation: glitchG 0.22s steps(2) forwards;
+    }
+    .loader-logo.glitching {
+      animation: loaderLogoReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s,
+                 glitchMain 0.22s steps(2) forwards;
+    }
+
+    @keyframes glitchR {
+      0%   { opacity: 0.9; transform: translate(-4px, -2px) skewX(8deg); clip-path: inset(10% 0 50% 0); }
+      25%  { opacity: 0.7; transform: translate(6px,  1px)  skewX(-6deg); clip-path: inset(30% 0 20% 0); }
+      50%  { opacity: 0.9; transform: translate(-3px, 3px)  skewX(4deg);  clip-path: inset(5%  0 65% 0); }
+      75%  { opacity: 0.5; transform: translate(4px, -2px)  skewX(-3deg); clip-path: inset(50% 0 10% 0); }
+      100% { opacity: 0;   transform: translate(0, 0); }
+    }
+    @keyframes glitchG {
+      0%   { opacity: 0.8; transform: translate(5px,  1px) skewX(-5deg); clip-path: inset(60% 0 0 0); }
+      25%  { opacity: 0.6; transform: translate(-4px, 2px) skewX(7deg);  clip-path: inset(40% 0 5% 0); }
+      50%  { opacity: 0.8; transform: translate(3px, -3px) skewX(-4deg); clip-path: inset(70% 0 0 0); }
+      75%  { opacity: 0.4; transform: translate(-5px, 1px) skewX(3deg);  clip-path: inset(20% 0 30% 0); }
+      100% { opacity: 0;   transform: translate(0, 0); }
+    }
+    @keyframes glitchMain {
+      0%   { transform: translate(0,0); }
+      20%  { transform: translate(-3px, 0) skewX(2deg); }
+      40%  { transform: translate(3px,  0) skewX(-1deg); }
+      60%  { transform: translate(-2px, 1px); }
+      80%  { transform: translate(2px, -1px); }
+      100% { transform: translate(0,0); }
+    }
+
+    /* ── Shake: applied to loader-logo-wrap ── */
+    .loader-logo-wrap.shaking {
+      animation: logoShake 0.22s cubic-bezier(.36,.07,.19,.97) forwards;
+    }
+    @keyframes logoShake {
+      0%   { transform: translate(0, 0) rotate(0deg); }
+      15%  { transform: translate(-5px, -2px) rotate(-0.8deg); }
+      30%  { transform: translate(6px,  2px) rotate(0.6deg); }
+      45%  { transform: translate(-4px, -1px) rotate(-0.4deg); }
+      60%  { transform: translate(4px,  1px) rotate(0.3deg); }
+      75%  { transform: translate(-2px, 0px) rotate(-0.2deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    /* ── Tagline ── */
+    .loader-tagline {
+      font-family: 'DM Mono', monospace;
+      font-size: clamp(10px, 1.4vw, 13px);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(10,26,255,0.75);
+      opacity: 0;
+      animation: loaderFadeIn 0.6s ease forwards 1s;
+    }
+
+    /* ── Progress bar ── */
+    .loader-progress-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: clamp(200px, 36vw, 400px);
+      opacity: 0;
+      animation: loaderFadeIn 0.6s ease forwards 0.9s;
+    }
+    .loader-progress-track {
+      position: relative;
+      width: 100%;
+      height: 2px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: visible;
+    }
+    .loader-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0A1AFF, #4f7fff);
+      border-radius: 2px;
+      transition: width 0.08s linear;
+      position: relative;
+      z-index: 1;
+    }
+    .loader-progress-fill::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #7fa9ff;
+      box-shadow: 0 0 10px #4f7fff, 0 0 24px rgba(10,26,255,0.8);
+    }
+    .loader-progress-glow {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(10,26,255,0.25), transparent);
+      border-radius: 2px;
+      animation: loaderGlowSweep 1.6s ease-in-out infinite;
+    }
+    @keyframes loaderGlowSweep {
+      0%   { transform: translateX(-100%); opacity: 0; }
+      30%  { opacity: 1; }
+      100% { transform: translateX(300%); opacity: 0; }
+    }
+    .loader-progress-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: rgba(240,242,255,0.4);
+      align-self: flex-end;
+    }
+
+    /* ── Utility ── */
+    @keyframes loaderFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Adobe floating logos ── */
+    .loader-adobe-logos {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      overflow: hidden;
+    }
+    .adobe-logo {
+      position: absolute;
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      animation: adobeLevitate ease-in-out infinite, adobeFadeIn 1s ease forwards;
+      filter: drop-shadow(0 0 10px var(--glow));
+    }
+    .adobe-logo svg { width: 28px; height: 28px; }
+
+    /*
+     * ── Adobe logo layout: symmetric constellation ──
+     * Two vertical columns flank the center content, with
+     * a trio arcing across the top and bottom edges.
+     *
+     *   Top-left arc         Top-right arc
+     *      [7]  [3]          [10]  [8]
+     *
+     *   Left column                Right column
+     *      [1]                           [4]
+     *      [5]                           [2]
+     *
+     *   Bottom-left arc      Bottom-right arc
+     *      [9]  [6]          [6]  [11]  (only 10 logos)
+     */
+
+    /* ── LEFT COLUMN ── */
+    /* Pr  — upper-left */
+    .adobe-logo:nth-child(1)  {
+      left: 7%; top: 32%;
+      animation-duration: 5.2s, 1s;
+      animation-delay: 0s, 0.1s;
+      --glow: rgba(153,153,255,0.45); --bob: 12px;
+    }
+    /* Ae  — lower-left */
+    .adobe-logo:nth-child(2)  {
+      left: 7%; top: 58%;
+      animation-duration: 6.8s, 1s;
+      animation-delay: -2.1s, 0.25s;
+      --glow: rgba(153,153,255,0.45); --bob: 10px;
+    }
+
+    /* ── TOP ARC (left-of-center → right-of-center) ── */
+    /* Ps  — top-left arc */
+    .adobe-logo:nth-child(3)  {
+      left: 22%; top: 10%;
+      animation-duration: 4.9s, 1s;
+      animation-delay: -1.4s, 0.4s;
+      --glow: rgba(49,168,255,0.45); --bob: 14px;
+    }
+    /* Ai  — top-center */
+    .adobe-logo:nth-child(4)  {
+      left: 50%; top: 7%;
+      transform: translateX(-50%);
+      animation-duration: 7.1s, 1s;
+      animation-delay: -3.5s, 0.2s;
+      --glow: rgba(255,154,0,0.45); --bob: 10px;
+    }
+    /* Au  — top-right arc */
+    .adobe-logo:nth-child(5)  {
+      right: 22%; top: 10%;
+      animation-duration: 5.7s, 1s;
+      animation-delay: -0.8s, 0.55s;
+      --glow: rgba(0,228,187,0.45); --bob: 14px;
+    }
+
+    /* ── RIGHT COLUMN ── */
+    /* Me  — upper-right */
+    .adobe-logo:nth-child(6)  {
+      right: 7%; top: 32%;
+      animation-duration: 6.3s, 1s;
+      animation-delay: -4.2s, 0.35s;
+      --glow: rgba(204,126,255,0.45); --bob: 11px;
+    }
+    /* Id  — lower-right */
+    .adobe-logo:nth-child(7)  {
+      right: 7%; top: 58%;
+      animation-duration: 5.5s, 1s;
+      animation-delay: -1.9s, 0.6s;
+      --glow: rgba(255,51,102,0.45); --bob: 13px;
+    }
+
+    /* ── BOTTOM ARC ── */
+    /* Ch  — bottom-left arc */
+    .adobe-logo:nth-child(8)  {
+      left: 22%; bottom: 10%;
+      animation-duration: 7.4s, 1s;
+      animation-delay: -2.7s, 0.15s;
+      --glow: rgba(224,109,255,0.45); --bob: 12px;
+    }
+    /* Xd  — bottom-center */
+    .adobe-logo:nth-child(9)  {
+      left: 50%; bottom: 7%;
+      transform: translateX(-50%);
+      animation-duration: 4.6s, 1s;
+      animation-delay: -0.5s, 0.7s;
+      --glow: rgba(255,97,246,0.45); --bob: 10px;
+    }
+    /* Lr  — bottom-right arc */
+    .adobe-logo:nth-child(10) {
+      right: 22%; bottom: 10%;
+      animation-duration: 6.1s, 1s;
+      animation-delay: -3.1s, 0.45s;
+      --glow: rgba(49,168,255,0.45); --bob: 12px;
+    }
+
+    /* Gentle vertical bob in place */
+    @keyframes adobeLevitate {
+      0%, 100% { transform: translateY(0)           rotate(-1.5deg) scale(1);    }
+      50%       { transform: translateY(var(--bob))  rotate(1.5deg)  scale(1.04); }
+    }
+    /* Special bob for the two X-centered logos (4th & 9th child) that use translateX(-50%) */
+    .adobe-logo:nth-child(4),
+    .adobe-logo:nth-child(9) {
+      animation-name: adobeLevitateCenter, adobeFadeIn;
+    }
+    @keyframes adobeLevitateCenter {
+      0%, 100% { transform: translateX(-50%) translateY(0)           rotate(-1.5deg) scale(1);    }
+      50%       { transform: translateX(-50%) translateY(var(--bob))  rotate(1.5deg)  scale(1.04); }
+    }
+    /* Fade in once on load */
+    @keyframes adobeFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 0.5; }
+    }
+
+  </style>
   <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 </head>
 <body>
+
+<!-- ============================================================
+     MOLTEN LOADING SCREEN
+     ============================================================ -->
+<div id="molten-loader">
+  <!-- Ambient noise grain overlay -->
+  <canvas id="loaderGrain"></canvas>
+
+  <!-- Scanline overlay -->
+  <div class="loader-scanlines"></div>
+
+
+  <!-- Floating Adobe software logos -->
+  <div class="loader-adobe-logos">
+    <!-- Premiere Pro -->
+    <div class="adobe-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#00005B"/>
+        <text x="50" y="68" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="42" font-weight="900" fill="#9999FF">Pr</text>
+      </svg>
+    </div>
+    <!-- After Effects -->
+    <div class="adobe-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#00005B"/>
+        <text x="50" y="68" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="42" font-weight="900" fill="#9999FF">Ae</text>
+      </svg>
+    </div>
+    <!-- Photoshop -->
+    <div class="adobe-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#001E36"/>
+        <text x="50" y="68" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="42" font-weight="900" fill="#31A8FF">Ps</text>
+      </svg>
+    </div>
+    <!-- Illustrator -->
+    <div class="adobe-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#310000"/>
+        <text x="50" y="68" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="42" font-weight="900" fill="#FF9A00">Ai</text>
+      </svg>
+    </div>
+    <!-- Audition -->
+    <div class="adobe-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#00191F"/>
+        <text x="50" y="68" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="42" font-weight="900" fill="#00E4BB">Au</text>
+      </svg>
+    </div>
+    <!-- Media Encoder -->
+    <div class="adobe-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#1A0037"/>
+        <text x="50" y="68" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="42" font-weight="900" fill="#CC7EFF">Me</text>
+      </svg>
+    </div>
+    <!-- InDesign -->
+    <div class="adobe-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#49021F"/>
+        <text x="50" y="68" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="42" font-weight="900" fill="#FF3366">Id</text>
+      </svg>
+    </div>
+    <!-- Character Animator -->
+    <div class="adobe-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#1A0037"/>
+        <text x="50" y="68" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="42" font-weight="900" fill="#E06DFF">Ch</text>
+      </svg>
+    </div>
+    <!-- XD -->
+    <div class="adobe-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#2E001F"/>
+        <text x="50" y="68" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="42" font-weight="900" fill="#FF61F6">Xd</text>
+      </svg>
+    </div>
+    <!-- Lightroom -->
+    <div class="adobe-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="16" fill="#001525"/>
+        <text x="50" y="68" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="42" font-weight="900" fill="#31A8FF">Lr</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Corner brackets — premium HUD feel -->
+  <div class="loader-corner loader-corner--tl"></div>
+  <div class="loader-corner loader-corner--tr"></div>
+  <div class="loader-corner loader-corner--bl"></div>
+  <div class="loader-corner loader-corner--br"></div>
+
+  <!-- Side data readouts -->
+  <div class="loader-hud loader-hud--left">
+    <span>SYS://INIT</span>
+    <span>VER_2.0.6</span>
+    <span>RENDERING</span>
+  </div>
+  <div class="loader-hud loader-hud--right">
+    <span>MOʟTEN.FX</span>
+    <span>PORTFOLIO</span>
+    <span>©2026</span>
+  </div>
+
+  <!-- Central logo group -->
+  <div class="loader-center">
+    <!-- Glow orb behind logo -->
+    <div class="loader-orb"></div>
+
+    <!-- The MOLTEN wordmark with glitch layers -->
+    <div class="loader-logo-wrap" id="loaderLogoWrap">
+      <div class="loader-logo" id="loaderLogo" data-text="MOʟTEN">
+        <span class="loader-logo-ghost loader-logo-ghost--r" aria-hidden="true">MOʟTEN</span>
+        <span class="loader-logo-ghost loader-logo-ghost--g" aria-hidden="true">MOʟTEN</span>
+        MOʟTEN
+      </div>
+      <div class="loader-tagline" id="loaderTagline">Creative Portfolio</div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="loader-progress-wrap">
+      <div class="loader-progress-track">
+        <div class="loader-progress-fill" id="loaderProgressFill"></div>
+        <div class="loader-progress-glow"></div>
+      </div>
+      <div class="loader-progress-label" id="loaderProgressLabel">000%</div>
+    </div>
+  </div>
+</div>
 
 <!-- Space starfield canvas -->
 <canvas id="spaceCanvas"></canvas>
@@ -326,6 +890,99 @@
     <a href="https://discordapp.com/users/1242061395521175622" target="_blank" rel="noopener noreferrer">Discord</a>
   </div>
 </footer>
+
+<!-- ── MOLTEN LOADER SCRIPT ── -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Config ── */
+  var TOTAL_MS   = 3600;   // total loader duration
+  var GLITCH_TIMES = [800, 2200]; // ms when glitch fires
+  var GLITCH_DURATION = 240; // ms
+
+
+  /* ── Grain canvas (animated noise) ── */
+  (function initGrain() {
+    var canvas = document.getElementById('loaderGrain');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+    var rafId;
+    function drawGrain() {
+      var w = canvas.width, h = canvas.height;
+      var imageData = ctx.createImageData(w, h);
+      var d = imageData.data;
+      for (var i = 0; i < d.length; i += 4) {
+        var v = Math.random() * 255 | 0;
+        d[i] = v; d[i+1] = v; d[i+2] = v; d[i+3] = 255;
+      }
+      ctx.putImageData(imageData, 0, 0);
+      rafId = requestAnimationFrame(drawGrain);
+    }
+    drawGrain();
+    // expose so we can stop it
+    window._loaderGrainRaf = function() { cancelAnimationFrame(rafId); };
+  })();
+
+  /* ── Progress counter ── */
+  var fill  = document.getElementById('loaderProgressFill');
+  var label = document.getElementById('loaderProgressLabel');
+  var start = performance.now();
+  var pct   = 0;
+
+  function animateProgress(now) {
+    var elapsed = now - start;
+    var raw     = Math.min(elapsed / TOTAL_MS, 1);
+    // ease-out curve so it feels organic
+    pct = Math.round(raw < 1 ? (1 - Math.pow(1 - raw, 2.4)) * 100 : 100);
+    if (fill)  fill.style.width  = pct + '%';
+    if (label) label.textContent = String(pct).padStart(3, '0') + '%';
+    if (raw < 1) requestAnimationFrame(animateProgress);
+  }
+  requestAnimationFrame(animateProgress);
+
+  /* ── Glitch + shake triggers ── */
+  var logoEl  = document.getElementById('loaderLogo');
+  var wrapEl  = document.getElementById('loaderLogoWrap');
+
+  function fireGlitch() {
+    if (!logoEl || !wrapEl) return;
+    // Add classes
+    logoEl.classList.add('glitching');
+    wrapEl.classList.add('shaking');
+    // Remove after animation finishes
+    setTimeout(function () {
+      logoEl.classList.remove('glitching');
+      wrapEl.classList.remove('shaking');
+    }, GLITCH_DURATION);
+  }
+
+  GLITCH_TIMES.forEach(function (t) {
+    setTimeout(fireGlitch, t);
+  });
+
+  /* ── Exit sequence ── */
+  var loader = document.getElementById('molten-loader');
+  document.body.classList.add('is-loading');
+
+  setTimeout(function () {
+    if (loader) loader.classList.add('loader-exit');
+    document.body.classList.remove('is-loading');
+    // Unlock hero animations
+    document.body.classList.add('hero-ready');
+    // Stop grain noise
+    if (window._loaderGrainRaf) window._loaderGrainRaf();
+    // Remove from DOM fully after transition
+    setTimeout(function () {
+      if (loader) loader.classList.add('loader-hidden');
+    }, 750);
+  }, TOTAL_MS);
+
+})();
+</script>
 
 <!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
