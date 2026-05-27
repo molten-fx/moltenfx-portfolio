@@ -605,7 +605,7 @@ body.hero-ready .hero-scroll { animation-play-state: running; }
 .project-card:nth-child(8) { grid-column: 7/10; grid-row: 3; min-height: 180px; }
 .project-card:nth-child(9) { grid-column: 10/13; grid-row: 3; min-height: 180px; }
 /* project-card-image overlay now hidden by default — same behaviour as film large card */
-.project-card-image .project-overlay { opacity: 0; background: linear-gradient(to top,rgba(5,7,13,0.96) 0%,rgba(5,7,13,0.35) 55%,transparent 100%); }
+.project-card-image .project-overlay { opacity: 0; background: linear-gradient(to top,rgba(5,7,13,0.96) 0%,rgba(5,7,13,0.35) 55%,transparent 100%); transition: opacity 0.45s ease; }
 .portfolio-grid[data-active-filter] { grid-auto-flow: dense; }
 .portfolio-grid[data-active-filter] .project-card {
   min-height: 220px;
@@ -754,9 +754,9 @@ body.hero-ready .hero-scroll { animation-play-state: running; }
   display: flex; align-items: center; gap: 8px;
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.22s ease, transform 0.22s ease;
-  transition-delay: 0s;
   will-change: opacity, transform;
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  transition-delay: 0s;
 }
 .project-tag::before {
   content: ''; width: 0; height: 1px; background: var(--accent2);
@@ -769,9 +769,8 @@ body.hero-ready .hero-scroll { animation-play-state: running; }
   letter-spacing: 0.05em; color: var(--white); margin-bottom: 14px; line-height: 1;
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  transition-delay: 0s;
-  will-change: opacity, transform;
+  transition: opacity 0.4s ease, transform 0.42s cubic-bezier(0.22,1,0.36,1);
+  transition-delay: 0.07s;
 }
 .project-link {
   display: inline-flex; align-items: center; gap: 10px;
@@ -781,9 +780,7 @@ body.hero-ready .hero-scroll { animation-play-state: running; }
   padding: 8px 16px; border: 1px solid rgba(255,255,255,0.1); width: fit-content;
   opacity: 0;
   transform: translateY(14px);
-  transition: opacity 0.18s ease, transform 0.18s ease, color 0.3s, border-color 0.3s, background 0.3s;
-  transition-delay: 0s;
-  will-change: opacity, transform;
+  transition-delay: 0.14s;
 }
 
 /* ── reveal on hover — staggered ── */
@@ -791,7 +788,7 @@ body.hero-ready .hero-scroll { animation-play-state: running; }
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1);
-  transition-delay: 0.04s;
+  transition-delay: 0.05s;
 }
 .project-card:hover .project-tag::before {
   width: 18px;
@@ -800,13 +797,13 @@ body.hero-ready .hero-scroll { animation-play-state: running; }
 .project-card:hover .project-name {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.42s ease, transform 0.42s cubic-bezier(0.22,1,0.36,1);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1);
   transition-delay: 0.1s;
 }
 .project-card:hover .project-link {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.35s ease, transform 0.38s cubic-bezier(0.22,1,0.36,1), color 0.3s, border-color 0.3s, background 0.3s;
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1), color 0.3s, border-color 0.3s, background 0.3s;
   transition-delay: 0.18s;
 }
 
@@ -1420,13 +1417,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     transparent       100%);
   z-index: 1;
   opacity: 0;
-  transition: opacity 0.45s ease;
+  transition: opacity 0.4s ease;
 }
 .feat-card:hover {
   box-shadow: 0 0 0 1px rgba(80,120,255,0.22), 0 20px 50px rgba(10,26,255,0.18);
 }
 .feat-card:hover::after {
-  opacity: 1;
+  opacity: 0.85;
 }
 
 /* Thumbnail */
@@ -1483,17 +1480,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   justify-content: space-between;
   margin-bottom: 10px;
   opacity: 0;
-  transform: translateY(16px);
-  /* Leave: fast fade-down */
-  transition: opacity 0.22s ease, transform 0.22s ease;
-  transition-delay: 0s;
+  transform: translateY(14px);
   will-change: opacity, transform;
+  transition: opacity 0.38s ease, transform 0.38s cubic-bezier(0.22,1,0.36,1);
+  transition-delay: 0s;
 }
 .feat-card:hover .feat-meta {
   opacity: 1;
   transform: translateY(0);
-  /* Enter: stagger in */
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1);
   transition-delay: 0.04s;
 }
 .feat-tag {
@@ -1528,16 +1522,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   line-height: 0.95;
   margin-bottom: 12px;
   opacity: 0;
-  transform: translateY(20px);
-  /* Leave: fast */
-  transition: opacity 0.22s ease, transform 0.22s ease;
-  transition-delay: 0s;
+  transform: translateY(18px);
   will-change: opacity, transform;
+  transition: opacity 0.42s ease, transform 0.42s cubic-bezier(0.22,1,0.36,1);
+  transition-delay: 0.08s;
 }
 .feat-card:hover .feat-name {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.42s ease, transform 0.42s cubic-bezier(0.22,1,0.36,1);
   transition-delay: 0.1s;
 }
 
@@ -1550,15 +1542,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   margin-bottom: 18px;
   opacity: 0;
   transform: translateY(12px);
-  /* Leave: fast */
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  transition-delay: 0s;
   will-change: opacity, transform;
+  transition: opacity 0.38s ease, transform 0.38s cubic-bezier(0.22,1,0.36,1);
+  transition-delay: 0.14s;
 }
 .feat-card:hover .feat-desc {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.38s ease, transform 0.38s cubic-bezier(0.22,1,0.36,1);
   transition-delay: 0.14s;
 }
 
@@ -1578,11 +1568,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   width: fit-content;
   border-radius: 3px;
   opacity: 0;
-  transform: translateY(14px);
-  /* Leave: fast */
-  transition: opacity 0.18s ease, transform 0.18s ease, color 0.3s, border-color 0.3s, background 0.3s;
-  transition-delay: 0s;
+  transform: translateY(10px);
   will-change: opacity, transform;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1), color 0.3s, border-color 0.3s, background 0.3s;
+  transition-delay: 0.2s;
 }
 .feat-link svg {
   width: 12px;
@@ -1591,7 +1580,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .feat-card:hover .feat-link {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1), color 0.3s, border-color 0.3s, background 0.3s;
   transition-delay: 0.2s;
 }
 .feat-link:hover {

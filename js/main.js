@@ -1038,39 +1038,45 @@ document.addEventListener('mouseenter', () => {
 
   /* ================================================================
      #6 — 3D CARD TILT ON HOVER
-     Direct cursor-tracking — no lerp lag while hovering,
-     smooth ease-back only on mouse leave
+     Uses a WRAPPER div for the 3D transform so the card element's
+     own CSS transitions and :hover rules are NEVER disrupted.
   ================================================================ */
   (function () {
     if (prefersReducedMotion) return;
 
-    var TILT_MAX    = 12;    // max degrees
-    var LEAVE_EASE  = 0.18;  // ease speed when returning to flat (higher = faster snap-back)
-    var SCALE       = 1.03;
+    var TILT_MAX   = 10;
+    var LEAVE_EASE = 0.14;
+    var SCALE      = 1.03;
 
-    function initTilt(el) {
-      if (el._tilt) return;
-      el._tilt = true;
+    function initTilt(card) {
+      if (card._tilt) return;
+      card._tilt = true;
 
+      /* ── Create a wrapper that takes the transform ── */
+      var parent = card.parentNode;
+      var wrapper = document.createElement('div');
+      wrapper.className = 'tilt-wrapper';
+      wrapper.style.cssText = [
+        'display:contents',          // wrapper is invisible to layout
+        'position:relative',
+        'transform-style:preserve-3d',
+        'will-change:transform',
+      ].join(';');
+
+      // Insert wrapper before card, move card inside
+      parent.insertBefore(wrapper, card);
+      wrapper.appendChild(card);
+
+      // The actual tilting element — use the card's parent position
+      // but apply transform only to wrapper
       var cx = 0, cy = 0, sc = 1;
-      var leaving = false, raf = null;
-      var enterTimer = null;  // debounce rapid enter/leave at corners
+      var leaving = false, raf = null, enterTimer = null;
 
-      el.style.transformStyle = 'preserve-3d';
-      el.style.willChange = 'transform';
-
-      // Clamp helper — prevents extreme corner values that cause jumps
-      function clamp(v, min, max) { return v < min ? min : v > max ? max : v; }
+      function clamp(v, mn, mx) { return v < mn ? mn : v > mx ? mx : v; }
 
       function getTilt(e, rect) {
-        // Scale-expansion gap: when the card scales up by (SCALE-1),
-        // each edge grows by half that fraction of its dimension.
-        // We add 8px extra buffer to absorb subpixel rounding.
-        // This is proportional, so large cards get a larger safe-zone than small ones.
-        var padX = rect.width  * (SCALE - 1) / 2 + 8;
-        var padY = rect.height * (SCALE - 1) / 2 + 8;
-        var nx = clamp((e.clientX - rect.left - padX) / (rect.width  - padX * 2), 0, 1);
-        var ny = clamp((e.clientY - rect.top  - padY) / (rect.height - padY * 2), 0, 1);
+        var nx = clamp((e.clientX - rect.left) / rect.width,  0, 1);
+        var ny = clamp((e.clientY - rect.top)  / rect.height, 0, 1);
         return {
           rx:  (nx - 0.5) * TILT_MAX * 2,
           ry: -(ny - 0.5) * TILT_MAX * 2
@@ -1078,55 +1084,48 @@ document.addEventListener('mouseenter', () => {
       }
 
       function applyTransform(rx, ry, scale) {
-        el.style.transform =
-          'perspective(800px) rotateX(' + ry.toFixed(3) + 'deg) rotateY(' + rx.toFixed(3) + 'deg) scale3d(' + scale.toFixed(4) + ',' + scale.toFixed(4) + ',1)';
+        card.style.transform =
+          'perspective(900px) rotateX(' + ry.toFixed(2) + 'deg) rotateY(' + rx.toFixed(2) + 'deg) scale3d(' + scale.toFixed(3) + ',' + scale.toFixed(3) + ',1)';
       }
 
-      // While leaving: ease cx/cy/sc back to 0/0/1
       function leaveLoop() {
         cx += (0 - cx) * LEAVE_EASE;
         cy += (0 - cy) * LEAVE_EASE;
         sc += (1 - sc) * LEAVE_EASE;
         applyTransform(cx, cy, sc);
-        if (Math.abs(cx) > 0.01 || Math.abs(cy) > 0.01 || Math.abs(sc - 1) > 0.001) {
+        if (Math.abs(cx) > 0.02 || Math.abs(cy) > 0.02 || Math.abs(sc - 1) > 0.001) {
           raf = requestAnimationFrame(leaveLoop);
         } else {
           cx = 0; cy = 0; sc = 1;
-          applyTransform(0, 0, 1);
-          el.style.transition = ''; // restore any CSS transitions
+          /* Clear inline transform — CSS takes over cleanly */
+          card.style.transform = '';
           raf = null;
         }
       }
 
-      el.addEventListener('mouseenter', function (e) {
-        // Cancel any pending leave that was debounced
+      card.addEventListener('mouseenter', function (e) {
         if (enterTimer) { clearTimeout(enterTimer); enterTimer = null; }
         leaving = false;
         if (raf) { cancelAnimationFrame(raf); raf = null; }
-        // Kill any CSS transition on transform so JS updates are instant
-        el.style.transition = 'none';
         sc = SCALE;
-        var rect = el.getBoundingClientRect();
+        var rect = card.getBoundingClientRect();
         var t = getTilt(e, rect);
         cx = t.rx; cy = t.ry;
         applyTransform(cx, cy, sc);
+        /* NO transition override — card CSS :hover rules fire normally */
       });
 
-      el.addEventListener('mousemove', function (e) {
+      card.addEventListener('mousemove', function (e) {
         if (leaving) return;
-        var rect = el.getBoundingClientRect();
+        var rect = card.getBoundingClientRect();
         var t = getTilt(e, rect);
         cx = t.rx; cy = t.ry;
         applyTransform(cx, cy, SCALE);
       });
 
-      el.addEventListener('mouseleave', function () {
-        // Debounce delay scales with card area — large cards repaint slower,
-        // so they need a bigger window to absorb corner bounce re-entries.
-        // Clamped between 30ms (small cards) and 80ms (huge hero cards).
-        var rect = el.getBoundingClientRect();
-        var area = rect.width * rect.height;
-        var delay = Math.min(Math.max(Math.round(area / 8000), 30), 80);
+      card.addEventListener('mouseleave', function () {
+        var rect = card.getBoundingClientRect();
+        var delay = Math.min(Math.max(Math.round(rect.width * rect.height / 8000), 25), 70);
         enterTimer = setTimeout(function () {
           enterTimer = null;
           leaving = true;
