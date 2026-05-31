@@ -26,11 +26,11 @@
   <a href="index.html" class="nav-logo">MOʟTEN<span>.</span></a>
   <ul class="nav-links-center">
     <li><a href="index.html">Home</a></li>
-    <li><a href="about.html">Services</a></li>
+    <li><a href="about.html" class="nav-active">About</a></li>
     <li><a href="projects.html">Portfolio</a></li>
-    <li><a href="services.html" class="nav-active">About</a></li>
+    <li><a href="services.html">Services</a></li>
     <li><a href="contact.html">Contact</a></li>
-  </ul>
+    </ul>
   <div class="nav-right">
     <a href="contact.html" class="nav-cta"><span>Hire Me</span></a>
     <button class="nav-hamburger" id="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMenu()">
@@ -40,9 +40,9 @@
 </nav>
 <div class="nav-mobile-menu" id="mobileMenu">
   <a href="index.html" onclick="toggleMenu()">Home</a>
-  <a href="about.html" onclick="toggleMenu()">Services</a>
-  <a href="projects.html" onclick="toggleMenu()">Portfolio</a>
   <a href="about.html" class="nav-active" onclick="toggleMenu()">About</a>
+  <a href="projects.html" onclick="toggleMenu()">Portfolio</a>
+  <a href="services.html" onclick="toggleMenu()">Services</a>
   <a href="contact.html" onclick="toggleMenu()">Contact</a>
   <a href="contact.html" class="mobile-cta" onclick="toggleMenu()">Hire Me</a>
 </div>
@@ -380,7 +380,7 @@
     <svg class="mbn-icon" viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
     <span class="mbn-label">Home</span>
   </a>
-  <a href="about.html" class="mbn-item">
+  <a href="services.html" class="mbn-item">
     <svg class="mbn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><path d="M17 13v8M13 17h8"/></svg>
     <span class="mbn-label">Services</span>
   </a>
@@ -388,7 +388,7 @@
     <svg class="mbn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="1"/><path d="M3 9h18M8 21h8M12 17v4"/></svg>
     <span class="mbn-label">Portfolio</span>
   </a>
-  <a href="services.html" class="mbn-item mbn-active">
+  <a href="about.html" class="mbn-item mbn-active">
     <svg class="mbn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
     <span class="mbn-label">About</span>
   </a>
