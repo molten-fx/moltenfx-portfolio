@@ -3191,3 +3191,25 @@ body.is-scrolling::-webkit-scrollbar-thumb {
     pointer-events: none !important;
   }
 }
+
+
+/* ================================================================
+   FIX — smooth 3D tilt on cards that also carry .sa (scroll reveal)
+   .sa's `transition: transform .65s` + stagger delay was easing every
+   tilt frame. While tilting, JS owns transform; keep only the other
+   transitions (and opacity so reveal/fade still behaves).
+================================================================ */
+.sa.is-tilting {
+  transition: box-shadow 0.4s ease, border-color 0.3s, opacity 0.65s cubic-bezier(0.22,1,0.36,1) !important;
+  transition-delay: 0s !important;
+  will-change: transform;
+}
+.tilt-wrapper { display: contents; }
+
+/* Disable sticky hover glow on touch + keep tilt GPU-friendly */
+.project-card, .feat-card, .service-card { backface-visibility: hidden; }
+
+/* Keyboard users: visible focus on cards/links that are clickable */
+.project-card:focus-visible, .channel-card:focus-visible, .feat-card:focus-visible {
+  outline: 2px solid rgba(80,120,255,.8); outline-offset: 3px;
+}

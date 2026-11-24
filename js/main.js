@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
           lastScroll = current;
           ticking = false;
         });
-        ticking = true;
       }
     }, { passive: true });
   })();
@@ -511,7 +510,10 @@ document.addEventListener('mouseenter', () => {
       ctx.beginPath(); ctx.arc(0,0,2,0,Math.PI*2); ctx.fillStyle=`rgba(60,120,255,${alpha*2})`; ctx.fill();
       ctx.restore();
     }
+    let heroVisible = true;
+    if ('IntersectionObserver' in window) new IntersectionObserver(es => { heroVisible = es[0].isIntersecting; }).observe(canvas);
     function render() {
+      if (!heroVisible) { requestAnimationFrame(render); return; }
       ctx.clearRect(0,0,W,H);
       const vg=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(W,H)*0.7); vg.addColorStop(0,'rgba(5,7,13,0)'); vg.addColorStop(1,'rgba(3,4,8,0.55)'); ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
       drawBeams(); drawOrbs(); drawGrid(); drawRings(); drawParticles(); drawScanlines(); drawCornerBrackets(); drawReticle();
@@ -579,8 +581,11 @@ document.addEventListener('mouseenter', () => {
         targetMY = e.clientY / window.innerHeight;
       });
 
+      var blobVisible = true;
+      if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { blobVisible = es[0].isIntersecting; }).observe(canvas);
       function render() {
         requestAnimationFrame(render);
+        if (!blobVisible) return;
         t += 0.008;
         mouseX += (targetMX - mouseX) * 0.04;
         mouseY += (targetMY - mouseY) * 0.04;
@@ -791,7 +796,7 @@ document.addEventListener('mouseenter', () => {
     function close() {
       overlay.classList.remove('lb-open');
       document.body.style.overflow = '';
-      setTimeout(() => { lbImg.src = ''; }, 350);
+      setTimeout(() => { lbImg.removeAttribute('src'); }, 350);
     }
 
     // Open on card click
@@ -1037,108 +1042,83 @@ document.addEventListener('mouseenter', () => {
 
 
   /* ================================================================
-     #6 — 3D CARD TILT ON HOVER
-     Uses a WRAPPER div for the 3D transform so the card element's
-     own CSS transitions and :hover rules are NEVER disrupted.
+     #6 — 3D CARD TILT (smooth, rAF-driven)
+     Root cause of the old laggy tilt on the Portfolio page: cards carry
+     the .sa scroll-reveal class, whose `transition: transform .65s` (+ a
+     stagger delay) beat the card's own transition rule, so every tilt
+     update was being eased over 650ms. Fix: while hovering, the card gets
+     .is-tilting (CSS strips the transform transition + delay) and a
+     lerped rAF loop drives the transform — same feel as the home cards.
   ================================================================ */
   (function () {
     if (prefersReducedMotion) return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-    var TILT_MAX   = 10;
-    var LEAVE_EASE = 0.14;
-    var SCALE      = 1.03;
+    var TILT_MAX = 9;      // degrees
+    var SCALE    = 1.03;
+    var FOLLOW   = 0.2;    // lerp toward cursor (higher = snappier)
+    var RELEASE  = 0.14;   // lerp back to rest
+
+    function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
 
     function initTilt(card) {
       if (card._tilt) return;
       card._tilt = true;
 
-      /* ── Create a wrapper that takes the transform ── */
-      var parent = card.parentNode;
-      var wrapper = document.createElement('div');
-      wrapper.className = 'tilt-wrapper';
-      wrapper.style.cssText = [
-        'display:contents',          // wrapper is invisible to layout
-        'position:relative',
-        'transform-style:preserve-3d',
-        'will-change:transform',
-      ].join(';');
+      var rx = 0, ry = 0, sc = 1;          // current
+      var trx = 0, try_ = 0, tsc = 1;      // target
+      var raf = null, hovering = false, rect = null;
 
-      // Insert wrapper before card, move card inside
-      parent.insertBefore(wrapper, card);
-      wrapper.appendChild(card);
+      function apply() {
+        card.style.transform = 'perspective(900px) rotateX(' + ry.toFixed(2) +
+          'deg) rotateY(' + rx.toFixed(2) + 'deg) scale3d(' + sc.toFixed(3) + ',' + sc.toFixed(3) + ',1)';
+      }
 
-      // The actual tilting element — use the card's parent position
-      // but apply transform only to wrapper
-      var cx = 0, cy = 0, sc = 1;
-      var leaving = false, raf = null, enterTimer = null;
+      function loop() {
+        var k = hovering ? FOLLOW : RELEASE;
+        rx += (trx - rx) * k;
+        ry += (try_ - ry) * k;
+        sc += (tsc - sc) * k;
+        apply();
+        var settled = Math.abs(trx - rx) < 0.02 && Math.abs(try_ - ry) < 0.02 && Math.abs(tsc - sc) < 0.001;
+        if (settled && !hovering) {
+          rx = ry = 0; sc = 1;
+          card.style.transform = '';
+          card.classList.remove('is-tilting');
+          raf = null;
+          return;
+        }
+        raf = requestAnimationFrame(loop);
+      }
+      function kick() { if (!raf) raf = requestAnimationFrame(loop); }
 
-      function clamp(v, mn, mx) { return v < mn ? mn : v > mx ? mx : v; }
-
-      function getTilt(e, rect) {
+      card.addEventListener('mouseenter', function () {
+        hovering = true;
+        rect = card.getBoundingClientRect();
+        card.classList.add('is-tilting');
+        tsc = SCALE;
+        kick();
+      });
+      card.addEventListener('mousemove', function (e) {
+        if (!rect) rect = card.getBoundingClientRect();
         var nx = clamp((e.clientX - rect.left) / rect.width,  0, 1);
         var ny = clamp((e.clientY - rect.top)  / rect.height, 0, 1);
-        return {
-          rx:  (nx - 0.5) * TILT_MAX * 2,
-          ry: -(ny - 0.5) * TILT_MAX * 2
-        };
-      }
-
-      function applyTransform(rx, ry, scale) {
-        card.style.transform =
-          'perspective(900px) rotateX(' + ry.toFixed(2) + 'deg) rotateY(' + rx.toFixed(2) + 'deg) scale3d(' + scale.toFixed(3) + ',' + scale.toFixed(3) + ',1)';
-      }
-
-      function leaveLoop() {
-        cx += (0 - cx) * LEAVE_EASE;
-        cy += (0 - cy) * LEAVE_EASE;
-        sc += (1 - sc) * LEAVE_EASE;
-        applyTransform(cx, cy, sc);
-        if (Math.abs(cx) > 0.02 || Math.abs(cy) > 0.02 || Math.abs(sc - 1) > 0.001) {
-          raf = requestAnimationFrame(leaveLoop);
-        } else {
-          cx = 0; cy = 0; sc = 1;
-          /* Clear inline transform — CSS takes over cleanly */
-          card.style.transform = '';
-          raf = null;
-        }
-      }
-
-      card.addEventListener('mouseenter', function (e) {
-        if (enterTimer) { clearTimeout(enterTimer); enterTimer = null; }
-        leaving = false;
-        if (raf) { cancelAnimationFrame(raf); raf = null; }
-        sc = SCALE;
-        var rect = card.getBoundingClientRect();
-        var t = getTilt(e, rect);
-        cx = t.rx; cy = t.ry;
-        applyTransform(cx, cy, sc);
-        /* NO transition override — card CSS :hover rules fire normally */
+        trx  =  (nx - 0.5) * TILT_MAX * 2;
+        try_ = -(ny - 0.5) * TILT_MAX * 2;
+        kick();
       });
-
-      card.addEventListener('mousemove', function (e) {
-        if (leaving) return;
-        var rect = card.getBoundingClientRect();
-        var t = getTilt(e, rect);
-        cx = t.rx; cy = t.ry;
-        applyTransform(cx, cy, SCALE);
-      });
-
       card.addEventListener('mouseleave', function () {
-        var rect = card.getBoundingClientRect();
-        var delay = Math.min(Math.max(Math.round(rect.width * rect.height / 8000), 25), 70);
-        enterTimer = setTimeout(function () {
-          enterTimer = null;
-          leaving = true;
-          if (raf) cancelAnimationFrame(raf);
-          raf = requestAnimationFrame(leaveLoop);
-        }, delay);
+        hovering = false; rect = null;
+        trx = 0; try_ = 0; tsc = 1;
+        kick();
       });
+      // Rect is cached per hover; refresh it if the page scrolls under the cursor
+      window.addEventListener('scroll', function () { if (hovering) rect = null; }, { passive: true });
     }
 
     function initAll() {
       document.querySelectorAll('.project-card, .feat-card, .service-card, .skill-card, .achievement-item').forEach(initTilt);
     }
-
     initAll();
     document.querySelectorAll('.filter-btn').forEach(function (btn) {
       btn.addEventListener('click', function () { setTimeout(initAll, 60); });
